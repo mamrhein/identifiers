@@ -1,0 +1,9 @@
+include LICENCE.*
+include CHANGES.*
+recursive-include *.xml
+recursive-include doc/html [a-zA-Z0-9]*.*
+exclude MANIFEST.in
+exclude .*
+exclude *.komodoproject
+exclude doc/*
+exclude make_*
