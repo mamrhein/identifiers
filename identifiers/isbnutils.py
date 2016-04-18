@@ -56,11 +56,13 @@ rule_list = list(_iter_rules(root))
 
 
 def lookup_isbn_prefix(digits):
-    idx = bisect(rule_list, (digits,)) - 1
+    idx = max(bisect(rule_list, (digits,)) - 1, 0)
     lower_prefix, upper_prefix, registrant_idx, item_idx = rule_list[idx]
     if lower_prefix <= digits <= upper_prefix:
         if item_idx > 0:
             return (registrant_idx, item_idx)
         raise ValueError("Excluded prefix range: '" + lower_prefix + "' - '" +
                          upper_prefix + "'.")
-    raise ValueError("Undefined prefix.")
+    if lower_prefix[:3] != digits[:3]:
+        raise ValueError("Undefined prefix.")
+    raise ValueError("Undefined registration group or registrant.")
