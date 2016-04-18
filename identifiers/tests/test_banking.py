@@ -123,13 +123,15 @@ class IBANTest(unittest.TestCase):
         self.assertEqual(iban.check_digits, '11')
         self.assertEqual(iban.bank_identifier, 'CBJO')
         self.assertEqual(iban.bank_account_number, '0010000000000131AVH302')
-        #self.assertEqual(iban.elements(), ('ABCD', 'BE', 'B3', 'XXX'))
+        self.assertEqual(iban.elements(), ('JO', '11', 'CBJO',
+                                           '0010000000000131AVH302'))
         iban = IBAN('MT84MALT011000012345MTLCAST001S')
         self.assertEqual(iban.country_code, 'MT')
         self.assertEqual(iban.check_digits, '84')
         self.assertEqual(iban.bank_identifier, 'MALT01100')
         self.assertEqual(iban.bank_account_number, '0012345MTLCAST001S')
-        #self.assertEqual(iban.elements(), ('ABCD', 'BE', 'B3', ''))
+        self.assertEqual(iban.elements(), ('MT', '84', 'MALT01100',
+                                           '0012345MTLCAST001S'))
 
     def test_examples(self):
         for country_code in _IBAN_registry:
