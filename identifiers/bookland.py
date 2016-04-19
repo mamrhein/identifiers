@@ -57,7 +57,7 @@ class _Bookland_GTIN(GTIN_13):
 
     def __init__(self, *args):
         if not all(isinstance(arg, str) for arg in args):
-            raise TypeError("All argumants must be instances of %s." % str)
+            raise TypeError("All arguments must be instances of %s." % str)
         n_args = len(args)
         if n_args == 1:
             digits = args[0].strip()
@@ -186,6 +186,8 @@ class ISSN(Identifier):
         return self._id[-1]
 
     def __init__(self, digits):
+        if not isinstance(digits, str):
+            raise TypeError("Argument must be instance of %s." % str)
         try:
             if digits[4] in ('-', ' '):
                 digits = digits[:4] + digits[5:]
@@ -245,11 +247,13 @@ class ISSN_13(GTIN_13):
         if isinstance(serial_number, ISSN):
             if addon is None:
                 digits = '977' + serial_number.raw_number + '00'
-            else:
+            elif isinstance(addon, str):
                 if len(addon) != 2 or not addon.isnumeric():
                     raise ValueError("'addon', if given, must be a string "
                                      "containing 2 digits.")
                 digits = '977' + serial_number.raw_number + addon
+            else:
+                raise TypeError("`addon` must be an instance of %s." % str)
             return super(ISSN_13, self).__init__(digits)
         if isinstance(serial_number, str):
             try:
