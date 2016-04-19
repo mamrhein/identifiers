@@ -21,6 +21,7 @@ periodicals and notated music
 
 
 from __future__ import absolute_import
+import re
 from .identifier import Identifier
 from .gs1 import GTIN_13
 from .isbnutils import lookup_isbn_prefix
@@ -30,6 +31,10 @@ str = type(u'')
 
 
 __metaclass__ = type
+
+
+_pattern_1 = re.compile('^(\d+)-(\d+)-(\d+)-(\d+)(?:-(\d))?$')
+_pattern_2 = re.compile('^(\d+) (\d+) (\d+) (\d+)(?: (\d))?$')
 
 
 class _Bookland_GTIN(GTIN_13):
@@ -51,16 +56,20 @@ class _Bookland_GTIN(GTIN_13):
     publication = GTIN_13.item_reference
 
     def __init__(self, *args):
+        if not all(isinstance(arg, str) for arg in args):
+            raise TypeError("All argumants must be instances of %s." % str)
         n_args = len(args)
         if n_args == 1:
-            digits = args[0]
+            digits = args[0].strip()
             if not digits.isnumeric():
                 # canonical form given?
-                parts = digits.split('-')
-                if len(parts) == 1:
-                    parts = digits.split(' ')
-                if len(parts) in (5, 4):
-                    return self.__init__(*parts)
+                match = _pattern_1.match(digits) or _pattern_2.match(digits)
+                if match:
+                    parts = match.groups()
+                    if parts[4] is None:        # check digit omitted
+                        return self.__init__(*parts[:4])
+                    else:
+                        return self.__init__(*parts)
                 else:
                     raise ValueError("Argument must only contain digits "
                                      "or be a string formatted as ISBN.")
