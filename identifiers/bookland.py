@@ -264,12 +264,9 @@ class ISSN_13(GTIN_13):
                 return self.__init__(issn, addon)
             # given serial number is not an ISSN
             if addon is not None:
-                raise ValueError("`addon` must only be given together "
-                                 "with an ISSN.")
-            try:
-                return super(ISSN_13, self).__init__(serial_number)
-            except ValueError:
-                pass
+                raise TypeError("`addon` must only be given together "
+                                "with an ISSN.")
+            return super(ISSN_13, self).__init__(serial_number)
         raise TypeError("`serial_number` must be an ISSN or a string "
                         "representing an ISSN or a GTIN with prefix '977'.")
 
