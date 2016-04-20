@@ -241,6 +241,10 @@ class ISSNTest(unittest.TestCase):
         self.assertTrue(isinstance(gtin, ISSN_13))
         self.assertEqual(gtin._id, '9771050124572')
 
+    def test_raw_number(self):
+        issn = ISSN('1050-124X')
+        self.assertEqual(issn.raw_number, '1050124')
+
     def test_separated(self):
         issn = ISSN('1050-124X')
         self.assertEqual(issn.separated(), '1050-124X')
@@ -249,3 +253,62 @@ class ISSNTest(unittest.TestCase):
     def test_str(self):
         issn = ISSN('1050-124X')
         self.assertEqual(str(issn), 'ISSN 1050-124X')
+
+
+class ISSN_13_Test(unittest.TestCase):
+
+    def test_constructor(self):
+        # wrong type of argument
+        self.assertRaises(TypeError, ISSN_13, 1050124)
+        self.assertRaises(TypeError, ISSN_13, '1050124', 25)
+        self.assertRaises(TypeError, ISSN_13, ISSN('1050124'), 25)
+        self.assertRaises(TypeError, ISSN_13, '9771050124', '25')
+        # invalid format
+        self.assertRaises(ValueError, ISSN_13, '03178471X')
+        self.assertRaises(ValueError, ISSN_13, '031784')
+        self.assertRaises(ValueError, ISSN_13, '0317_8471')
+        self.assertRaises(ValueError, ISSN_13, '0317  8471')
+        self.assertRaises(ValueError, ISSN_13, '0317-847-1')
+        self.assertRaises(ValueError, ISSN_13, '9771050124')
+        self.assertRaises(ValueError, ISSN_13, '9771050124X25')
+        #invalid prefix
+        self.assertRaises(ValueError, ISSN_13, '978105012425')
+        # invalid addon
+        self.assertRaises(ValueError, ISSN_13, '1050124', '5')
+        self.assertRaises(ValueError, ISSN_13, '1050124', '125')
+        # wrong check digit
+        self.assertRaises(ValueError, ISSN, '0317847X')
+        self.assertRaises(ValueError, ISSN, '0317 847X')
+        self.assertRaises(ValueError, ISSN_13, '9771050124257')
+        # correct ISSN_13
+        issn = ISSN('1050-124X')
+        for arg in [issn, '1050-124', '1050-124X', '977105012400',
+                    '9771050124008']:
+            gtin = ISSN_13(arg)
+            self.assertEqual(gtin._id, '9771050124008')
+        for arg in [issn, '1050-124', '1050-124X']:
+            gtin = ISSN_13(arg, '25')
+            self.assertEqual(gtin._id, '9771050124251')
+        for arg in ['977105012425', '9771050124251']:
+            gtin = ISSN_13(arg)
+            self.assertEqual(gtin._id, '9771050124251')
+
+    def test_elements(self):
+        gtin = ISSN_13('9771050124008')
+        self.assertEqual(gtin.gs1_prefix, '977')
+        self.assertEqual(gtin.company_prefix, '977')
+        self.assertEqual(gtin.item_reference, '105012400')
+        self.assertEqual(gtin.check_digit, '8')
+        self.assertEqual(gtin.elements(), ('977', '105012400', '8'))
+
+    def test_separated(self):
+        gtin = ISSN_13('9771050124008')
+        self.assertEqual(gtin.separated(), '977-105012400-8')
+        self.assertEqual(gtin.separated('•'), '977•105012400•8')
+
+    def test_extract_issn(self):
+        issn = ISSN('1050-124X')
+        gtin = ISSN_13(issn)
+        self.assertEqual(gtin.extract_issn(), issn)
+        gtin = ISSN_13(issn, '25')
+        self.assertEqual(gtin.extract_issn(), issn)
