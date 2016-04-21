@@ -22,6 +22,8 @@ from abc import abstractproperty
 from .identifier import Identifier
 from .gs1utils import lookup_company_prefix
 
+str = type(u'')
+
 
 __metaclass__ = type
 
@@ -82,6 +84,8 @@ class GS1NumericalIdentifier(Identifier):
         return self._id[-1]
 
     def __init__(self, *args):
+        if not all(isinstance(arg, str) for arg in args):
+            raise TypeError("All arguments must be instances of %s." % str)
         n_args = len(args)
         if n_args == 1:
             digits = args[0]
