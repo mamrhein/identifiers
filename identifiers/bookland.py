@@ -23,7 +23,7 @@ periodicals and notated music
 from __future__ import absolute_import
 import re
 from .identifier import Identifier
-from .gs1 import GTIN_13
+from .gs1 import GTIN13
 from .isbnutils import lookup_isbn_prefix
 from .ismnutils import lookup_ismn_prefix
 
@@ -37,7 +37,7 @@ _pattern_1 = re.compile('^(\d+)-(\d+)-(\d+)-(\d+)(?:-(\d))?$')
 _pattern_2 = re.compile('^(\d+) (\d+) (\d+) (\d+)(?: (\d))?$')
 
 
-class _Bookland_GTIN(GTIN_13):
+class _BooklandGTIN(GTIN13):
 
     """Base class for the "bookland" GTINs."""
 
@@ -53,7 +53,7 @@ class _Bookland_GTIN(GTIN_13):
         """Return the Registrant of the identifier."""
         return self._id[self._registrant_idx:self._ref_idx]
 
-    publication = GTIN_13.item_reference
+    publication = GTIN13.item_reference
 
     def __init__(self, *args):
         if not all(isinstance(arg, str) for arg in args):
@@ -129,7 +129,7 @@ class _Bookland_GTIN(GTIN_13):
         return self.__class__.__name__ + ' ' + self.separated()
 
 
-class ISBN(_Bookland_GTIN):
+class ISBN(_BooklandGTIN):
 
     """International Standard Book Number
 
@@ -143,7 +143,7 @@ class ISBN(_Bookland_GTIN):
         return lookup_isbn_prefix(digits)
 
 
-class ISMN(_Bookland_GTIN):
+class ISMN(_BooklandGTIN):
 
     """International Standard Music Number
 
@@ -213,8 +213,8 @@ class ISSN(Identifier):
                          "or a hyphen after the fourth digit.")
 
     def as_gtin(self, addon=None):
-        """Return GTIN-13 created from `self` + `addon`."""
-        return ISSN_13(self, addon)
+        """Return GTIN13 created from `self` + `addon`."""
+        return ISSN13(self, addon)
 
     def separated(self, separator='-'):
         return separator.join((self._id[:4], self._id[4:]))
@@ -226,7 +226,7 @@ class ISSN(Identifier):
         return self.__class__.__name__ + ' ' + self.separated()
 
 
-class ISSN_13(GTIN_13):
+class ISSN13(GTIN13):
 
     """International Standard Serial Number (as GTIN)
 
@@ -254,7 +254,7 @@ class ISSN_13(GTIN_13):
                 digits = '977' + serial_number.raw_number + addon
             else:
                 raise TypeError("`addon` must be an instance of %s." % str)
-            return super(ISSN_13, self).__init__(digits)
+            return super(ISSN13, self).__init__(digits)
         if isinstance(serial_number, str):
             try:
                 issn = ISSN(serial_number)
@@ -266,7 +266,7 @@ class ISSN_13(GTIN_13):
             if addon is not None:
                 raise TypeError("`addon` must only be given together "
                                 "with an ISSN.")
-            return super(ISSN_13, self).__init__(serial_number)
+            return super(ISSN13, self).__init__(serial_number)
         raise TypeError("`serial_number` must be an ISSN or a string "
                         "representing an ISSN or a GTIN with prefix '977'.")
 

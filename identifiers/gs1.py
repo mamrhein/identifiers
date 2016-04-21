@@ -161,7 +161,7 @@ class GTIN(GS1NumericalIdentifier):
     item_reference = GS1NumericalIdentifier._reference
 
 
-class GTIN_12(GTIN):
+class GTIN12(GTIN):
 
     """Global Trade Item Number (12 digits)
 
@@ -178,7 +178,7 @@ class GTIN_12(GTIN):
         return lookup_company_prefix('0' + digits)
 
 
-class GTIN_13(GTIN):
+class GTIN13(GTIN):
 
     """Global Trade Item Number (13 digits)
 
@@ -191,7 +191,7 @@ class GTIN_13(GTIN):
     EXTRA_DIGITS = 0
 
 
-class GTIN_14(GTIN):
+class GTIN14(GTIN):
 
     """Global Trade Item Number (14 digits)
 
@@ -211,12 +211,12 @@ class GTIN_14(GTIN):
         n_args = len(args)
         if n_args == 1:
             arg = args[0]
-            if isinstance(arg, (GTIN_13, GTIN_12)):
+            if isinstance(arg, (GTIN13, GTIN12)):
                 pad = self.LENGTH - arg.LENGTH
                 self._id = '0' * pad + arg._id
                 self._ref_idx = arg._ref_idx + pad
             else:
-                super(GTIN_14, self).__init__(*args)
+                super(GTIN14, self).__init__(*args)
 
 
 class GLN(GS1NumericalIdentifier):

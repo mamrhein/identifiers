@@ -30,7 +30,7 @@ word, number, letter, symbol, or any combination of those."
 
 from __future__ import absolute_import
 from .identifier import Identifier
-from .gs1 import GLN, GSIN, GTIN_12, GTIN_13, GTIN_14, SSCC
+from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
 from .bookland import ISBN, ISMN, ISSN
 from .banking import BIC, IBAN
 
@@ -42,9 +42,9 @@ __all__ = [
     'Identifier',
     'GLN',
     'GSIN',
-    'GTIN_12',
-    'GTIN_13',
-    'GTIN_14',
+    'GTIN12',
+    'GTIN13',
+    'GTIN14',
     'SSCC',
     'ISBN',
     'ISMN',
