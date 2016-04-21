@@ -277,8 +277,8 @@ class ISSN_13_Test(unittest.TestCase):
         self.assertRaises(ValueError, ISSN_13, '1050124', '5')
         self.assertRaises(ValueError, ISSN_13, '1050124', '125')
         # wrong check digit
-        self.assertRaises(ValueError, ISSN, '0317847X')
-        self.assertRaises(ValueError, ISSN, '0317 847X')
+        self.assertRaises(ValueError, ISSN_13, '0317847X')
+        self.assertRaises(ValueError, ISSN_13, '0317 847X')
         self.assertRaises(ValueError, ISSN_13, '9771050124257')
         # correct ISSN_13
         issn = ISSN('1050-124X')
