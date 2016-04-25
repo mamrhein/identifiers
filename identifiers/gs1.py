@@ -177,10 +177,6 @@ class GTIN12(GTIN):
     LENGTH = 12
     EXTRA_DIGITS = 0
 
-    @staticmethod
-    def lookup_prefix(digits):
-        return lookup_company_prefix('0' + digits)
-
 
 class GTIN13(GTIN):
 
