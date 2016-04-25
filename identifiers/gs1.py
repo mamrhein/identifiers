@@ -250,6 +250,10 @@ class SSCC(GS1NumericalIdentifier):
 
     serial_reference = GS1NumericalIdentifier._reference
 
+    @property
+    def extension_digit(self):
+        return self._id[0]
+
 
 class GSIN(GS1NumericalIdentifier):
 
