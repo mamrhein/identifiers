@@ -177,3 +177,56 @@ class GTIN14_Test(unittest.TestCase):
         gtin = GTIN14('40771234567895')
         self.assertEqual(gtin.separated(), '4-0771234-56789-5')
         self.assertEqual(gtin.separated('•'), '4•0771234•56789•5')
+
+
+class GSIN_Test(unittest.TestCase):
+
+    def test_constructor_1(self):
+        # invalid company prefix
+        self.assertRaises(ValueError, GSIN, '56978912345789013')
+        # wrong number of digits
+        self.assertRaises(ValueError, GSIN, '570789123456789013')
+        self.assertRaises(ValueError, GSIN, '570789123456783')
+        # correct GSIN
+        gsin = GSIN('07712345678901233')
+        self.assertEqual(gsin._id, '07712345678901233')
+
+    def test_elements(self):
+        gsin = GSIN('07712345678901233')
+        self.assertEqual(gsin.gs1_prefix, '077')
+        self.assertEqual(gsin.company_prefix, '0771234')
+        self.assertEqual(gsin.shipper_reference, '567890123')
+        self.assertEqual(gsin.check_digit, '3')
+        self.assertEqual(gsin.elements(), ('0771234', '567890123', '3'))
+
+    def test_separated(self):
+        gsin = GSIN('07712345678901233')
+        self.assertEqual(gsin.separated(), '0771234-567890123-3')
+        self.assertEqual(gsin.separated('•'), '0771234•567890123•3')
+
+
+class SSCC_Test(unittest.TestCase):
+
+    def test_constructor_1(self):
+        # invalid company prefix
+        self.assertRaises(ValueError, SSCC, '85697891234567890')
+        # wrong number of digits
+        self.assertRaises(ValueError, SSCC, '8570789123456789019')
+        self.assertRaises(ValueError, SSCC, '8570789123456789')
+        # correct SSCC
+        sscc = SSCC('707712345678901232')
+        self.assertEqual(sscc._id, '707712345678901232')
+
+    def test_elements(self):
+        sscc = SSCC('707712345678901232')
+        self.assertEqual(sscc.extension_digit, '7')
+        self.assertEqual(sscc.gs1_prefix, '077')
+        self.assertEqual(sscc.company_prefix, '0771234')
+        self.assertEqual(sscc.serial_reference, '567890123')
+        self.assertEqual(sscc.check_digit, '2')
+        self.assertEqual(sscc.elements(), ('7', '0771234', '567890123', '2'))
+
+    def test_separated(self):
+        sscc = SSCC('707712345678901232')
+        self.assertEqual(sscc.separated(), '7-0771234-567890123-2')
+        self.assertEqual(sscc.separated('•'), '7•0771234•567890123•2')
