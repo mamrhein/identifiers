@@ -26,8 +26,6 @@ except ImportError:
     from xml.etree import ElementTree as ETree
 
 
-__version__ = 0, 0, 1
-
 __metaclass__ = type
 
 
