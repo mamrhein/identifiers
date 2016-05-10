@@ -49,13 +49,19 @@ class Identifier():
 
     @abstractmethod
     def __init__(self, *args, **kwds):
-        """Initialize identifier."""
+        pass
 
     def __copy__(self):
-        """copy(self)"""
-        return self         # Identifiers are immutable
+        """copy(self)
 
-    __deepcopy__ = __copy__
+        Returns self (identifiers are immutable)."""
+        return self
+
+    def __deepcopy__(self, memo):
+        """deepcopy(self)
+
+        Returns self (identifiers are immutable)."""
+        return self.__copy__()
 
     def __hash__(self):
         """hash(self)"""
