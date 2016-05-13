@@ -205,18 +205,18 @@ class GTIN14(GTIN):
 
     @property
     def level_indicator(self):
+        """Return the identifier's level indicator (i.e. the first digit)."""
         return self._id[0]
 
     def __init__(self, *args):
-        n_args = len(args)
-        if n_args == 1:
+        if len(args) == 1:
             arg = args[0]
             if isinstance(arg, (GTIN13, GTIN12)):
                 pad = self.LENGTH - arg.LENGTH
                 self._id = '0' * pad + arg._id
                 self._ref_idx = arg._ref_idx + pad
-            else:
-                super(GTIN14, self).__init__(*args)
+                return
+        super(GTIN14, self).__init__(*args)
 
 
 class GLN(GS1NumericalIdentifier):
