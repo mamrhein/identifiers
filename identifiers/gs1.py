@@ -87,13 +87,14 @@ class GS1NumericalIdentifier(Identifier):
         if not all(isinstance(arg, str) for arg in args):
             raise TypeError("All arguments must be instances of %s." % str)
         n_args = len(args)
+        # 1. form: one argument given
         if n_args == 1:
             digits = args[0]
             if not digits.isnumeric():
                 raise ValueError("Argument must only contain digits.")
+            n_digits = len(digits)
             offset = self.EXTRA_DIGITS
             ref_idx = self.__class__.lookup_prefix(digits[offset:]) + offset
-            n_digits = len(digits)
             if n_digits == self.LENGTH:
                 check_digit = self.__class__.calc_check_digit(digits[:-1])
                 if check_digit != digits[-1]:
@@ -105,32 +106,63 @@ class GS1NumericalIdentifier(Identifier):
             else:
                 raise ValueError("Argument must have " + str(self.LENGTH) +
                                  " or " + str(self.LENGTH - 1) + " digits.")
-        elif 3 <= n_args <= 4:
+        # 2. form: single elements given
+        else:
+            error_msg = None
+            extra_arg = min(self.EXTRA_DIGITS, 1)
+            if extra_arg:
+                try:
+                    extra_digits, company_prefix, ref_elem, check_digit = args
+                except ValueError:
+                    try:
+                        extra_digits, company_prefix, ref_elem = args
+                    except ValueError:  # wrong number of arguments
+                        error_msg = \
+                            "One, three or four arguments required, {} given."
+                    else:
+                        check_digit = None
+            else:
+                extra_digits = ''
+                try:
+                    company_prefix, ref_elem, check_digit = args
+                except ValueError:
+                    try:
+                        company_prefix, ref_elem = args
+                    except ValueError:  # wrong number of arguments
+                        error_msg = \
+                            "One, two or three arguments required, {} given."
+                    else:
+                        check_digit = None
+            if error_msg:   # wrong number of arguments
+                raise TypeError(error_msg.format(n_args))
             digits = ''.join(args)
             if not digits.isnumeric():
                 raise ValueError("Arguments must only contain digits.")
             offset = self.EXTRA_DIGITS
+            if offset and len(extra_digits) != offset:
+                raise ValueError("First element must contain " + str(offset) +
+                                 " digit" + "s" * min(offset - 1, 1) +
+                                 ", " + str(len(extra_digits)) + " given.")
             ref_idx = self.__class__.lookup_prefix(digits[offset:]) + offset
-            if len(args[0]) != 3:
-                raise ValueError("Undefined GS1 prefix: " + args[0] + "'.")
-            if len(''.join(args[:2])) != ref_idx:
+            if len(company_prefix) + offset != ref_idx:
                 raise ValueError("Undefined company prefix: '" +
-                                 args[1] + "'.")
-            n_digits = len(digits)
-            if n_args == 4 and n_digits == self.LENGTH:
-                check_digit = self.__class__.calc_check_digit(digits[:-1])
-                if check_digit != digits[-1]:
+                                 company_prefix + "'.")
+            len_ref_elem = self.LENGTH - ref_idx - 1
+            if len(ref_elem) != len_ref_elem:
+                raise ValueError(("Second", "Third")[extra_arg] +
+                                 " argument must contain " +
+                                 str(len_ref_elem) + " digits.")
+            if check_digit:
+                if len(check_digit) != 1:
+                    raise ValueError("Check digit must only be one digit.")
+                valid_check_digit = \
+                    self.__class__.calc_check_digit(digits[:-1])
+                if check_digit != valid_check_digit:
                     raise ValueError("Wrong check digit; should be '" +
-                                     check_digit + "'.")
-            elif n_args == 3 and n_digits == self.LENGTH - 1:
+                                     valid_check_digit + "'.")
+            else:
                 check_digit = self.__class__.calc_check_digit(digits)
                 digits += check_digit
-            else:
-                raise ValueError(str(n_args) + " arguments must contain " +
-                                 str(self.LENGTH + n_args - 4) + " digits.")
-        else:
-            raise TypeError("One, three or four arguments required, " +
-                            str(n_args) + " given.")
         self._id = digits
         self._ref_idx = ref_idx
 

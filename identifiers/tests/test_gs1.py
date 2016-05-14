@@ -34,7 +34,7 @@ class GS1NumericalIdentifierTest(unittest.TestCase):
         # wrong type of argument
         self.assertRaises(TypeError, GLN, 5700191234561)
         # wrong number of arguments
-        self.assertRaises(TypeError, GLN, '570019', '123456')
+        self.assertRaises(TypeError, GLN, '570', '019', '123456', '1')
         # invalid format
         self.assertRaises(ValueError, GLN, '570019-123456-1')
         self.assertRaises(ValueError, GLN, '570019123456X')
@@ -56,26 +56,25 @@ class GS1NumericalIdentifierTest(unittest.TestCase):
         gln = GLN('570019123456')
         self.assertEqual(gln._id, '5700191234561')
 
-    def test_constructor_4_5(self):
+    def test_constructor_n(self):
         # wrong type of argument
-        self.assertRaises(TypeError, GLN, 570, '019', '123456', '1')
-        self.assertRaises(TypeError, GLN, '570', 19, '123456', '1')
-        self.assertRaises(TypeError, GLN, '570', '019', 123456, '1')
-        self.assertRaises(TypeError, GLN, '570', '019', '123456', 1)
+        self.assertRaises(TypeError, GLN, 570019, '123456', '1')
+        self.assertRaises(TypeError, GLN, '570019', 123456, '1')
+        self.assertRaises(TypeError, GLN, '570019', '123456', 1)
         # wrong number of digits
-        self.assertRaises(ValueError, GLN, '570', '019', '1234567', '1')
-        self.assertRaises(ValueError, GLN, '570', '019', '123456', '01')
+        self.assertRaises(ValueError, GLN, '570019', '1234567', '1')
+        self.assertRaises(ValueError, GLN, '570019', '123456', '01')
         # invalid GS1 prefix
-        self.assertRaises(ValueError, GLN, '050', '123456', '789')
-        self.assertRaises(ValueError, GLN, '977', '019', '123456')
+        self.assertRaises(ValueError, GLN, '050123456', '789')
+        self.assertRaises(ValueError, GLN, '977019', '123456')
         # invalid company prefix
-        self.assertRaises(ValueError, GLN, '569', '789', '123456')
+        self.assertRaises(ValueError, GLN, '569789', '123456')
         # wrong check digit
-        self.assertRaises(ValueError, GLN, '570', '019', '123456', '9')
+        self.assertRaises(ValueError, GLN, '570019', '123456', '9')
         # correct GLN
-        gln = GLN('570', '019', '123456', '1')
+        gln = GLN('570019', '123456', '1')
         self.assertEqual(gln._id, '5700191234561')
-        gln = GLN('570', '019', '123456')
+        gln = GLN('570019', '123456')
         self.assertEqual(gln._id, '5700191234561')
 
     def test_str(self):
@@ -162,6 +161,36 @@ class GTIN14_Test(unittest.TestCase):
         self.assertRaises(ValueError, GTIN14, '157001912345')
         # correct GTIN14
         gtin = GTIN14('40771234567895')
+        self.assertEqual(gtin._id, '40771234567895')
+        gtin = GTIN14(GTIN12('077123456786'))
+        self.assertEqual(gtin._id, '00077123456786')
+        gtin = GTIN14(GTIN13('3779123456786'))
+        self.assertEqual(gtin._id, '03779123456786')
+
+    def test_constructor_n(self):
+        # wrong type of argument
+        self.assertRaises(TypeError, GTIN14, 4, '0771234', '56789', '5')
+        self.assertRaises(TypeError, GTIN14, '4', 771234, '56789', '5')
+        self.assertRaises(TypeError, GTIN14, '4', '0771234', 56789, '5')
+        self.assertRaises(TypeError, GTIN14, '4', '0771234', '56789', 5)
+        # wrong number of arguments
+        self.assertRaises(TypeError, GTIN14, '40771234', '56789')
+        self.assertRaises(TypeError, GTIN14, '4', '077', '1234', '56789', '5')
+        # wrong number of digits
+        self.assertRaises(ValueError, GTIN14, '40', '771234', '56789', '5')
+        self.assertRaises(ValueError, GTIN14, '4', '0771234', '567897', '5')
+        self.assertRaises(ValueError, GTIN14, '4', '0771234', '56789', '01')
+        # invalid GS1 prefix
+        self.assertRaises(ValueError, GTIN14, '4', '050', '56789', '789')
+        self.assertRaises(ValueError, GTIN14, '4', '9771234', '56789')
+        # invalid company prefix
+        self.assertRaises(ValueError, GTIN14, '4', '569789', '56789')
+        # wrong check digit
+        self.assertRaises(ValueError, GTIN14, '4', '0771234', '56789', '9')
+        # correct GTIN14
+        gtin = GTIN14('4', '0771234', '56789', '5')
+        self.assertEqual(gtin._id, '40771234567895')
+        gtin = GTIN14('4', '0771234', '56789')
         self.assertEqual(gtin._id, '40771234567895')
 
     def test_elements(self):
