@@ -1,5 +1,6 @@
 include LICENCE.*
 include CHANGES.*
+include Swift*.txt
 recursive-include *.xml
 recursive-include doc/html [a-zA-Z0-9]*.*
 exclude MANIFEST.in
