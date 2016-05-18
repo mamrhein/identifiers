@@ -47,25 +47,45 @@ class BIC(Identifier):
 
     @property
     def party_prefix(self):
+        """Return the BIC's Party Prefix."""
         return self._id[:4]
 
     @property
     def country_code(self):
+        """Return the BIC's Country Code."""
         return self._id[4:6]
 
     @property
     def party_suffix(self):
+        """Return the BIC's Party Suffix."""
         return self._id[6:8]
 
     @property
     def branch_code(self):
+        """Return the BIC's Branch Code (maybe empty)."""
         return self._id[8:]
 
     def elements(self):
+        """Return the BIC's Party Prefix, Country Code, Party Suffix and
+        Branch Code as a tuple."""
         return (self.party_prefix, self.country_code, self.party_suffix,
                 self.branch_code)
 
     def __init__(self, bic):
+        """
+        Args:
+            bic (`unicode string`): string representation of the BIC
+
+        Returns:
+            :class:`BIC` instance
+
+        Raises:
+            TypeError: given `bic` is not a `unicode string`
+            ValueError: given `bic` (stripped) does not contain 8 or 11
+                characters
+            ValueError: given `bic` contains characters other than A-Z or 0-9
+            ValueError: given `bic` contains an unknown country code
+        """
         if not isinstance(bic, str):
             raise TypeError("Argument must be instance of %s." % str)
         bic = bic.strip()
@@ -118,6 +138,7 @@ class IBAN(Identifier):
 
     @property
     def country_code(self):
+        """Return the IBAN's Country Code."""
         return self._id[:2]
 
     @property
@@ -127,19 +148,71 @@ class IBAN(Identifier):
 
     @property
     def bank_identifier(self):
+        """Return the IBAN's Bank Identifier."""
         end = get_iban_spec(self.country_code).bank_identifier_length + 4
         return self._id[4:end]
 
     @property
     def bank_account_number(self):
+        """Return the IBAN's Bank Account Number."""
         start = get_iban_spec(self.country_code).bank_identifier_length + 4
         return self._id[start:]
 
     def elements(self):
+        """Return the IBAN's Country Code, check digits, Bank Identifier and
+        Bank Account Number as tuple."""
         return (self.country_code, self.check_digits, self.bank_identifier,
                 self.bank_account_number)
 
     def __init__(self, *args):
+        """Instances of :class:`IBAN` can be created in two ways, by providing
+        a unicode string representation of an IBAN or by providing a country
+        code, a bank identifier and a bank account number.
+
+        **1. Form**
+
+        Args:
+            iban (`unicode string`): string representation of an IBAN
+
+        Returns:
+            instance of :class:`IBAN`
+
+        Raises:
+            TypeError: given `iban` is not a `unicode string`
+            ValueError: given `iban` contains an unknown country code
+            ValueError: given `iban` contains wrong check digits
+            ValueError: given `iban` does not follow the format required for
+                the given country code
+
+        **2. Form**
+
+        Args:
+            country_code (`unicode string`): 2-character country code
+                according to ISO 3166
+            bank_identifier (`unicode string` or `int`): code identifying the
+                bank maintaining the account
+            bank_account_number (`unicode string` or `int`): code identifying
+                the account (within the namespace of the bank)
+
+        Returns:
+            instance of :class:`IBAN`
+
+        Raises:
+            TypeError: invalid number of arguments
+            TypeError: given `country_code` is not a unicode string
+            ValueError: given `country_code` contains an invalid or unknown
+                country code
+            TypeError: given `bank_identifier` is not a `unicode string` or
+                not an `int`
+            ValueError: length of given `bank_identifier` not valid for
+                the given country code
+            TypeError: given `bank_account_number` is not a `unicode string`
+                or not an `int`
+            ValueError: length of given `bank_account_number` not valid for
+                the given country code
+            ValueError: given `bank_identifier` and `bank_account_number` do
+                not follow the BBAN format required for the given country code
+        """
         n_args = len(args)
         if n_args == 1:
             arg0 = args[0]
