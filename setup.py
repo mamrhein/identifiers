@@ -15,11 +15,10 @@ setup(
     author="Michael Amrhein",
     author_email="michael@adrhinum.de",
     url="https://pypi.python.org/pypi/identifiers",
-    description="Standardized identifiers for unique objects or unique "
-                "classes of objects",
+    description="International Standard Identifiers",
     long_description=long_description,
     license='BSD',
-    keywords='identifier GS1 GLN GTIN SSCC GSIN ISBN ISSN BIC IBAN',
+    keywords='identifier GS1 GLN GTIN SSCC GSIN ISBN ISMN ISSN BIC IBAN',
     platforms='all',
     classifiers=[
         "Development Status :: 4 - Beta",
