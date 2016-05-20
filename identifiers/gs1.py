@@ -84,6 +84,53 @@ class GS1NumericalIdentifier(Identifier):
         return self._id[-1]
 
     def __init__(self, *args):
+        """An instance of {cls} can be created in two ways, by providing a
+        Unicode string representation of a {cls} or by providing the {cls}'s
+        elements as separate arguments.
+
+        **1. Form**
+
+        Args:
+            id (`Unicode string`): string representation of a {cls} (with or
+                without a check digit)
+
+        If `id` does not include a check digit, it is calculated and appended
+        automatically.
+
+        Returns:
+            instance of :class:`{cls}`
+
+        Raises:
+            TypeError: given `id` is not a `Unicode string`
+            ValueError: given `id` contains character(s) other than digits 0-9
+            ValueError: given `id` contains wrong check digit
+            ValueError: length of given `id` not valid
+
+        **2. Form**
+
+        Args:
+            {extra_arg}
+            company_prefix (`Unicode string`): number identifying the company
+                issuing the identifier, starting with a 3-digit GS1 prefix
+            {item_ref} (`Unicode string`): number identifying the {item}
+            check_digit (`Unicode string`): 1-digit number (optional)
+
+        If `check_digit` is omitted, it is calculated and appended
+        automatically.
+
+        Returns:
+            instance of :class:`{cls}`
+
+        Raises:
+            TypeError: invalid number of arguments
+            TypeError: a given argument is not a Unicode string
+            ValueError: a given argument contains character(s) other than
+                digits 0-9
+            ValueError: length of given `company_prefix` not valid
+            ValueError: given `company_prefix` not valid
+            ValueError: length of given `{item_ref}` not valid
+            ValueError: invalid check digit
+        """
         if not all(isinstance(arg, str) for arg in args):
             raise TypeError("All arguments must be instances of %s." % str)
         n_args = len(args)
@@ -185,6 +232,17 @@ class GS1NumericalIdentifier(Identifier):
         return separator.join((part for part in self.elements() if part))
 
 
+def _make_init_doc(cls, extra_arg='', item_ref='', item=''):
+    doc = GS1NumericalIdentifier.__init__.__doc__
+
+    def deco(meth):
+        meth.__doc__ = doc.format(cls=cls, extra_arg=extra_arg,
+                                  item_ref=item_ref, item=item)
+        return meth
+
+    return deco
+
+
 class GTIN(GS1NumericalIdentifier):
 
     """Global Trade Item Number
@@ -209,6 +267,10 @@ class GTIN12(GTIN):
     LENGTH = 12
     EXTRA_DIGITS = 0
 
+    @_make_init_doc('GTIN12', item_ref='item_reference', item='trade item')
+    def __init__(self, *args):
+        super(GTIN12, self).__init__(*args)
+
 
 class GTIN13(GTIN):
 
@@ -221,6 +283,10 @@ class GTIN13(GTIN):
 
     LENGTH = 13
     EXTRA_DIGITS = 0
+
+    @_make_init_doc('GTIN13', item_ref='item_reference', item='trade item')
+    def __init__(self, *args):
+        super(GTIN13, self).__init__(*args)
 
 
 class GTIN14(GTIN):
@@ -241,6 +307,63 @@ class GTIN14(GTIN):
         return self._id[0]
 
     def __init__(self, *args):
+        """An instance of GTIN14 can be created in three ways, by providing a
+        GTIN12 or GTIN13, by providing a Unicode string representation of a
+        GTIN14 or by providing the GTIN14's elements as separate arguments.
+
+        **1. Form**
+
+        Args:
+            gtin (`GTIN12` or `GTIN13`): GTIN to be expanded to a GTIN14
+
+        Returns:
+            instance of :class:`GTIN14`
+
+        **2. Form**
+
+        Args:
+            id (`Unicode string`): string representation of a GTIN14 (with or
+                without a check digit)
+
+        If `id` does not include a check digit, it is calculated and appended
+        automatically.
+
+        Returns:
+            instance of :class:`GTIN14`
+
+        Raises:
+            TypeError: given `id` is not a `Unicode string`
+            ValueError: given `id` contains character(s) other than digits 0-9
+            ValueError: given `id` contains wrong check digit
+            ValueError: length of given `id` not valid
+
+        **3. Form**
+
+        Args:
+            level_indicator (`Unicode string`): 1-digit number providing
+                additional name space
+            company_prefix (`Unicode string`): number identifying the company
+                issuing the identifier, starting with a 3-digit GS1 prefix
+            item_reference (`Unicode string`): number identifying the trade
+                item
+            check_digit (`Unicode string`): 1-digit number (optional)
+
+        If `check_digit` is omitted, it is calculated and appended
+        automatically.
+
+        Returns:
+            instance of :class:`GTIN14`
+
+        Raises:
+            TypeError: invalid number of arguments
+            TypeError: a given argument is not a Unicode string
+            ValueError: a given argument contains character(s) other than
+                digits 0-9
+            ValueError: length of given `company_prefix` not valid
+            ValueError: given `company_prefix` not valid
+            ValueError: length of given `item_reference` not valid
+            ValueError: invalid check digit
+        """
         if len(args) == 1:
             arg = args[0]
             if isinstance(arg, (GTIN13, GTIN12)):
@@ -266,6 +389,10 @@ class GLN(GS1NumericalIdentifier):
 
     location_reference = GS1NumericalIdentifier._reference
 
+    @_make_init_doc('GLN', item_ref='location_reference', item='location')
+    def __init__(self, *args):
+        super(GLN, self).__init__(*args)
+
 
 class SSCC(GS1NumericalIdentifier):
 
@@ -284,7 +411,15 @@ class SSCC(GS1NumericalIdentifier):
 
     @property
     def extension_digit(self):
+        """Return the identifier's extension digit (i.e. the first digit)."""
         return self._id[0]
+
+    @_make_init_doc('SSCC', extra_arg='extension_digit (`Unicode string`) '
+                    '1-digit number providing additional name space',
+                    item_ref='serial_reference',
+                    item='shipping container')
+    def __init__(self, *args):
+        super(SSCC, self).__init__(*args)
 
 
 class GSIN(GS1NumericalIdentifier):
@@ -301,3 +436,7 @@ class GSIN(GS1NumericalIdentifier):
     EXTRA_DIGITS = 0
 
     shipper_reference = GS1NumericalIdentifier._reference
+
+    @_make_init_doc('GSIN', item_ref='shipper_reference', item='shipment')
+    def __init__(self, *args):
+        super(GSIN, self).__init__(*args)
