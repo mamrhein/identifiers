@@ -74,13 +74,13 @@ class BIC(Identifier):
     def __init__(self, bic):
         """
         Args:
-            bic (`unicode string`): string representation of the BIC
+            bic (`Unicode string`): string representation of the BIC
 
         Returns:
             :class:`BIC` instance
 
         Raises:
-            TypeError: given `bic` is not a `unicode string`
+            TypeError: given `bic` is not a `Unicode string`
             ValueError: given `bic` (stripped) does not contain 8 or 11
                 characters
             ValueError: given `bic` contains characters other than A-Z or 0-9
@@ -166,19 +166,19 @@ class IBAN(Identifier):
 
     def __init__(self, *args):
         """Instances of :class:`IBAN` can be created in two ways, by providing
-        a unicode string representation of an IBAN or by providing a country
+        a Unicode string representation of an IBAN or by providing a country
         code, a bank identifier and a bank account number.
 
         **1. Form**
 
         Args:
-            iban (`unicode string`): string representation of an IBAN
+            iban (`Unicode string`): string representation of an IBAN
 
         Returns:
             instance of :class:`IBAN`
 
         Raises:
-            TypeError: given `iban` is not a `unicode string`
+            TypeError: given `iban` is not a `Unicode string`
             ValueError: given `iban` contains an unknown country code
             ValueError: given `iban` contains wrong check digits
             ValueError: given `iban` does not follow the format required for
@@ -187,11 +187,11 @@ class IBAN(Identifier):
         **2. Form**
 
         Args:
-            country_code (`unicode string`): 2-character country code
+            country_code (`Unicode string`): 2-character country code
                 according to ISO 3166
-            bank_identifier (`unicode string` or `int`): code identifying the
+            bank_identifier (`Unicode string` or `int`): code identifying the
                 bank maintaining the account
-            bank_account_number (`unicode string` or `int`): code identifying
+            bank_account_number (`Unicode string` or `int`): code identifying
                 the account (within the namespace of the bank)
 
         Returns:
@@ -199,14 +199,14 @@ class IBAN(Identifier):
 
         Raises:
             TypeError: invalid number of arguments
-            TypeError: given `country_code` is not a unicode string
+            TypeError: given `country_code` is not a `Unicode string`
             ValueError: given `country_code` contains an invalid or unknown
                 country code
-            TypeError: given `bank_identifier` is not a `unicode string` or
+            TypeError: given `bank_identifier` is not a `Unicode string` or
                 not an `int`
             ValueError: length of given `bank_identifier` not valid for
                 the given country code
-            TypeError: given `bank_account_number` is not a `unicode string`
+            TypeError: given `bank_account_number` is not a `Unicode string`
                 or not an `int`
             ValueError: length of given `bank_account_number` not valid for
                 the given country code
