@@ -1,16 +1,3 @@
-The package `identifiers` provides classes that can be used to create and
-check identifiers for unique objects or unique classes of objects
-according to international standards.
-
-*Definition from Wikipedia*:
-
-"An identifier is a name that identifies (that is, labels the identity of)
-either a unique object or a unique class of objects, where the "object" or
-class may be an idea, physical [countable] object (or class thereof), or
-physical [noncountable] substance (or class thereof). The abbreviation ID
-often refers to identity, identification (the process of identifying), or an
-identifier (that is, an instance of identification). An identifier may be a
-word, number, letter, symbol, or any combination of those."
 
 Overview
 ========
