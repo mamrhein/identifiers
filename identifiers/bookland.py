@@ -56,6 +56,51 @@ class _BooklandGTIN(GTIN13):
     publication = GTIN13.item_reference
 
     def __init__(self, *args):
+        """An instance of {cls} can be created in two ways, by providing a
+        Unicode string representation of an {cls} or by providing a GS1
+        prefix, a registration group, a registrant, a publication number and,
+        optionally, a check digit.
+
+        **1. Form**
+
+        Args:
+            id (`Unicode string`): string representation of an {cls}
+
+        Returns:
+            instance of :class:`{cls}`
+
+        Raises:
+            TypeError: given `id` is not a `Unicode string`
+            ValueError: given `id` contains wrong check digit
+            ValueError: given `id` does not follow the format required for an
+                {cls}
+
+        **2. Form**
+
+        Args:
+            gs1_prefix (`Unicode string`): 3-digit GS1 prefix
+            registration_group (`Unicode string`): number identifying the
+                local registration authority
+            registrant (`Unicode string`): number identifying
+                the publishing company
+            publication (`Unicode string`): number identifying
+                the publication
+            check_digit (`Unicode string`): 1-digit number (optional)
+
+        Returns:
+            instance of :class:`{cls}`
+
+        Raises:
+            TypeError: invalid number of arguments
+            TypeError: a given argument is not a Unicode string
+            ValueError: a given argument contains character(s) other than
+                digits 0-9
+            ValueError: given `gs1_prefix` not valid
+            ValueError: given `registration_group` not valid
+            ValueError: given `registrant` not valid
+            ValueError: combined length of arguments not valid
+            ValueError: wrong check digit
+        """
         if not all(isinstance(arg, str) for arg in args):
             raise TypeError("All arguments must be instances of %s." % str)
         n_args = len(args)
@@ -72,7 +117,8 @@ class _BooklandGTIN(GTIN13):
                         return self.__init__(*parts)
                 else:
                     raise ValueError("Argument must only contain digits "
-                                     "or be a string formatted as ISBN.")
+                                     "or be a string formatted as " +
+                                     self.__class__.__name__ + ".")
             reg_idx, ref_idx = self.__class__.lookup_prefix(digits)
             n_digits = len(digits)
             if n_digits == self.LENGTH:
@@ -118,7 +164,8 @@ class _BooklandGTIN(GTIN13):
         self._ref_idx = ref_idx
 
     def elements(self):
-        """Return the identifier's elements as tuple."""
+        """Return the identifier's elements (gs1_prefix, registration_group,
+        registrant, publication, check_digit) as tuple."""
         return (self.gs1_prefix, self.registration_group, self.registrant,
                 self.publication, self.check_digit)
 
@@ -134,13 +181,24 @@ class ISBN(_BooklandGTIN):
     """International Standard Book Number
 
     The ISBN is a unique international identifier for monographic
-    publications."""
+    publications.
+
+    Each ISBN consists of 13 digits. It contains a 3-digits GS1 prefix ('978'
+    or '979'), a Registration Group, denoting the local registration
+    authority, a number denoting the Registrant, i. e. the company which
+    registered the ISBN, a number denoting the Publication and a check digit.
+    """
 
     __slots__ = ()
 
     @staticmethod
     def lookup_prefix(digits):
         return lookup_isbn_prefix(digits)
+
+    def __init__(self, *args):
+        super(ISBN, self).__init__(*args)
+
+    __init__.__doc__ = _BooklandGTIN.__init__.__doc__.format(cls='ISBN')
 
 
 class ISMN(_BooklandGTIN):
@@ -149,13 +207,24 @@ class ISMN(_BooklandGTIN):
 
     The ISMN is a unique international identifier of all notated music
     publications, whether available for sale, hire or gratis, whether a part,
-    a score, or an element in a multi-media kit."""
+    a score, or an element in a multi-media kit.
+
+    Each ISMN consists of 13 digits. It contains a 3-digits GS1 prefix
+    ('979'), a Registration Group ('0'), a number denoting the Registrant, i.
+    e. the company which registered the ISMN, a number denoting the
+    Publication and a check digit.
+    """
 
     __slots__ = ()
 
     @staticmethod
     def lookup_prefix(digits):
         return lookup_ismn_prefix(digits)
+
+    def __init__(self, *args):
+        super(ISMN, self).__init__(*args)
+
+    __init__.__doc__ = _BooklandGTIN.__init__.__doc__.format(cls='ISMN')
 
 
 class ISSN(Identifier):
@@ -186,6 +255,20 @@ class ISSN(Identifier):
         return self._id[-1]
 
     def __init__(self, digits):
+        """Args:
+            digits (`unicode string`): string representation of the ISSN
+
+        The argument must be a string with 8 digits, with 7 digits or with 7
+        digits followed by an 'X', optionally separated by a blank or a hyphen
+        after the fourth digit.
+
+        Returns:
+            instance of :class:`ISSN`
+
+        Raises:
+            ValueError: given arg has invalid format
+            ValueError: given arg contains wrong check digit
+        """
         if not isinstance(digits, str):
             raise TypeError("Argument must be instance of %s." % str)
         try:
