@@ -78,3 +78,19 @@ Identifiers for banks and bank accounts
 
   An internationally agreed system of identifying bank accounts across
   national borders.
+
+Identifiers for exchanges and exchange traded financial assets
+--------------------------------------------------------------
+
+* Market Identifier Code (MIC)
+
+  A unique identification code used to identify securities trading
+  exchanges, regulated and non-regulated trading markets.
+
+  See https://www.iso20022.org/10383/iso-10383-market-identifier-codes
+
+* International Securities Identification Number (ISIN)
+
+  Uniquely identifies a tradable financial asset, a.k.a security.
+
+  See http://www.anna-web.org/standards/isin-iso-6166/.

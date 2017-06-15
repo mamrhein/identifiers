@@ -62,3 +62,11 @@ Identifiers for banks and bank accounts
 .. autoclass:: IBAN
     :members: country_code, check_digits, bank_identifier,
         bank_account_number, elements
+
+Identifiers for exchanges and exchange traded financial assets
+==============================================================
+
+.. autoclass:: MIC
+
+.. autoclass:: ISIN
+    :members: country_code, nsin, check_digit, elements

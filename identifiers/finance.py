@@ -60,8 +60,7 @@ class MIC(Identifier):
 
         Raises:
             TypeError: given `mic` is not a `Unicode string`
-            ValueError: given `mic` (stripped) does not contain 4 characters
-            ValueError: given `bic` contains characters other than A-Z or 0-9
+            ValueError: given `mic` is not registered
         """
         if not isinstance(mic, str):
             raise TypeError("Argument must be instance of %s." % str)
@@ -153,8 +152,7 @@ class ISIN(Identifier):
             TypeError: given `country_code` is not a `Unicode string`
             ValueError: given `country_code` contains an invalid or unknown
                 country code
-            TypeError: given `nsin` is not a `Unicode string` or
-                not an `int`
+            TypeError: given `nsin` is not a `Unicode string`
             ValueError: length of given `nsin` not valid
             ValueError: given `nsin` contains invalid character(s)
         """

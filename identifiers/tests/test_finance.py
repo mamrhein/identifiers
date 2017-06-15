@@ -66,7 +66,7 @@ class ISINTest(unittest.TestCase):
         self.assertRaises(ValueError, ISIN, 'JOCBÄVHDUE64')
         # wrong check digit
         self.assertRaises(ValueError, ISIN, 'JOCB9VHDUE64')
-        # correct ISIN
+        # syntactic correct ISIN
         arg = 'JOCB9VHDUE67'
         isin = ISIN(arg)
         self.assertEqual(isin._id, arg)
@@ -90,7 +90,7 @@ class ISINTest(unittest.TestCase):
         # wrong chars
         self.assertRaises(ValueError, ISIN, 'JO', 'CBJoVH302')
         self.assertRaises(ValueError, ISIN, 'JO', 'CBJAV#302')
-        # correct ISIN
+        # syntactic correct ISIN
         args = ('JO', 'CBJAVH302')
         isin = ISIN(*args)
         self.assertEqual(isin._id, 'JOCBJAVH3025')

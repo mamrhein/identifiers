@@ -18,7 +18,8 @@ setup(
     description="International Standard Identifiers",
     long_description=long_description,
     license='BSD',
-    keywords='identifier GS1 GLN GTIN SSCC GSIN ISBN ISMN ISSN BIC IBAN',
+    keywords='identifier GS1 GLN GTIN SSCC GSIN ISBN ISMN ISSN BIC IBAN MIC '
+             'ISIN',
     platforms='all',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
