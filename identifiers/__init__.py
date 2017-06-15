@@ -39,7 +39,7 @@ from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
 from .identifier import Identifier
 
 
-__version__ = 0, 1, 0
+__version__ = 0, 2, 0
 
 
 __all__ = [
