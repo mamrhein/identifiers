@@ -28,11 +28,15 @@ word, number, letter, symbol, or any combination of those."
 """
 
 
+# standard library imports
 from __future__ import absolute_import
-from .identifier import Identifier
-from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
-from .bookland import ISBN, ISMN, ISSN
+
+# local imports
 from .banking import BIC, IBAN
+from .bookland import ISBN, ISMN, ISSN
+from .finance import MIC, ISIN
+from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
+from .identifier import Identifier
 
 
 __version__ = 0, 1, 0
@@ -51,4 +55,6 @@ __all__ = [
     'ISSN',
     'BIC',
     'IBAN',
+    'MIC',
+    'ISIN'
 ]
