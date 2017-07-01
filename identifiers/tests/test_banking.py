@@ -20,7 +20,7 @@
 from __future__ import absolute_import, unicode_literals
 import unittest
 from identifiers.banking import BIC, IBAN
-from identifiers.ibanutils import _IBAN_registry, get_iban_spec
+from identifiers.ibanregistry import IBAN_REGISTRY, get_iban_spec
 
 
 __metaclass__ = type
@@ -95,22 +95,22 @@ class IBANTest(unittest.TestCase):
         # wrong type of argument
         self.assertRaises(TypeError, IBAN, 38, 147, 'ABC')
         self.assertRaises(TypeError, IBAN, 'JO', 147.0, 10000000000131)
-        self.assertRaises(TypeError, IBAN, 'JO', 'CBJO', 3.9)
+        self.assertRaises(TypeError, IBAN, 'JO', 'CBJO3845', 3.9)
         # invalid / unknown country code
         self.assertRaises(ValueError, IBAN, 'JO47', 'CBJO',
                           '0010000000000131AVH302')
         self.assertRaises(ValueError, IBAN, 'xx', 'CBJO',
                           '0010000000000131AVH302')
         # wrong number of chars
-        self.assertRaises(ValueError, IBAN, 'JO', 'CBJO00', '00000000131AVH')
+        self.assertRaises(ValueError, IBAN, 'JO', 'CBJO0000', '000000131AVH')
         self.assertRaises(ValueError, IBAN, 'JO', 'CBJO', '0010080131AVH3029')
         # wrong chars
-        self.assertRaises(ValueError, IBAN, 'JO', 'CBJ0',
-                          '0010000000000131AVH302')
-        self.assertRaises(ValueError, IBAN, 'JO', 'CBJO',
-                          '001C000000000131AVH302')
+        self.assertRaises(ValueError, IBAN, 'JO', 'CBJ00010',
+                          '000000000131AVH302')
+        self.assertRaises(ValueError, IBAN, 'JO', 'CBJO001C',
+                          '000000000131AVH302')
         # correct IBAN
-        args = ('JO', 'CBJO', '0010000000000131AVH302')
+        args = ('JO', 'CBJO0010', '000000000131AVH302')
         iban = IBAN(*args)
         self.assertEqual(iban._id, 'JO11CBJO0010000000000131AVH302')
         args = ('DE', 10000000, 1020304050)
@@ -121,10 +121,10 @@ class IBANTest(unittest.TestCase):
         iban = IBAN('JO11CBJO0010000000000131AVH302')
         self.assertEqual(iban.country_code, 'JO')
         self.assertEqual(iban.check_digits, '11')
-        self.assertEqual(iban.bank_identifier, 'CBJO')
-        self.assertEqual(iban.bank_account_number, '0010000000000131AVH302')
-        self.assertEqual(iban.elements(), ('JO', '11', 'CBJO',
-                                           '0010000000000131AVH302'))
+        self.assertEqual(iban.bank_identifier, 'CBJO0010')
+        self.assertEqual(iban.bank_account_number, '000000000131AVH302')
+        self.assertEqual(iban.elements(), ('JO', '11', 'CBJO0010',
+                                           '000000000131AVH302'))
         iban = IBAN('MT84MALT011000012345MTLCAST001S')
         self.assertEqual(iban.country_code, 'MT')
         self.assertEqual(iban.check_digits, '84')
@@ -134,7 +134,7 @@ class IBANTest(unittest.TestCase):
                                            '0012345MTLCAST001S'))
 
     def test_examples(self):
-        for country_code in _IBAN_registry:
+        for country_code in IBAN_REGISTRY:
             iban_spec = get_iban_spec(country_code)
             for exmpl in iban_spec.examples:
                 self.assertTrue(IBAN(exmpl))

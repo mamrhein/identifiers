@@ -17,11 +17,17 @@
 """International identifiers for banks and bank accounts"""
 
 
+# standard library imports
 from __future__ import absolute_import, unicode_literals
 from string import ascii_uppercase, digits
+
+# third party imports
 from iso3166 import countries
+
+# local imports
 from .identifier import Identifier
-from .ibanutils import get_iban_spec
+from .ibanregistry import get_iban_spec
+from .ibanutils import calc_iban_check_digits, split_iban
 
 str = type(u'')
 
@@ -129,13 +135,6 @@ class IBAN(Identifier):
 
     __slots__ = ()
 
-    @staticmethod
-    def calc_check_digits(country_code, bban):
-        string = bban.upper() + country_code + '00'
-        check_num = int(''.join((str(_ALPHABET.index(char))
-                                 for char in string)))
-        return '%02i' % (98 - check_num % 97)
-
     @property
     def country_code(self):
         """Return the IBAN's Country Code."""
@@ -149,13 +148,13 @@ class IBAN(Identifier):
     @property
     def bank_identifier(self):
         """Return the IBAN's Bank Identifier."""
-        end = get_iban_spec(self.country_code).bank_identifier_length + 4
+        end = get_iban_spec(self.country_code).bban_split_pos + 4
         return self._id[4:end]
 
     @property
     def bank_account_number(self):
         """Return the IBAN's Bank Account Number."""
-        start = get_iban_spec(self.country_code).bank_identifier_length + 4
+        start = get_iban_spec(self.country_code).bban_split_pos + 4
         return self._id[start:]
 
     def elements(self):
@@ -219,19 +218,18 @@ class IBAN(Identifier):
             if not isinstance(arg0, str):
                 raise TypeError("Argument must be instance of %s." % str)
             arg0 = arg0.strip()
-            country_code = arg0[:2]
+            country_code, check_digits, bban = split_iban(arg0)
             try:
-                bban_length, bban_structure, bank_identifier_length, _ = \
+                bban_length, bban_structure, bban_split_pos, _ = \
                     get_iban_spec(country_code)
             except KeyError:
                 raise ValueError("Unknown country code: '%s'." % country_code)
-            bban = arg0[4:]
             if len(bban) == bban_length and bban_structure.match(bban):
-                check_digits = self.__class__.calc_check_digits(country_code,
-                                                                bban)
-                if check_digits != arg0[2:4]:
-                    raise ValueError("Wrong check digits; should be '" +
-                                     check_digits + "'.")
+                corr_check_digits = calc_iban_check_digits(country_code, bban)
+                if check_digits != corr_check_digits:
+                    raise ValueError(
+                        "Wrong check digits: '%s'; should be '%s'."
+                        % (check_digits, corr_check_digits))
                 self._id = arg0
             else:
                 raise ValueError('Invalid IBAN format.')
@@ -243,30 +241,30 @@ class IBAN(Identifier):
                 raise ValueError("Country code must be a 2-character string.")
             country_code = arg0
             try:
-                bban_length, bban_structure, bank_identifier_length, _ = \
+                bban_length, bban_structure, bban_split_pos, _ = \
                     get_iban_spec(country_code)
             except KeyError:
                 raise ValueError("Unknown country code: '%s'." % country_code)
             arg1 = args[1]
             if isinstance(arg1, str):
-                if len(arg1) == bank_identifier_length:
+                if len(arg1) == bban_split_pos:
                     bank_identifier = arg1
                 else:
                     raise ValueError("Bank identifier, if given as a string, "
                                      "must contain %i chars."
-                                     % bank_identifier_length)
+                                     % bban_split_pos)
             elif isinstance(arg1, int):
                 bank_identifier = format(arg1,
-                                         '0%id' % bank_identifier_length)
-                if len(bank_identifier) != bank_identifier_length:
+                                         '0%id' % bban_split_pos)
+                if len(bank_identifier) != bban_split_pos:
                     raise ValueError("Bank identifier, if given as an int, "
                                      "must not have more than %i digits."
-                                     % bank_identifier_length)
+                                     % bban_split_pos)
             else:
                 raise TypeError("Bank identifier must be instance of "
                                 "%s or %s." % (str, int))
             arg2 = args[2]
-            account_number_length = bban_length - bank_identifier_length
+            account_number_length = bban_length - bban_split_pos
             if isinstance(arg2, str):
                 if len(arg2) == account_number_length:
                     bank_account_number = arg2
@@ -280,14 +278,13 @@ class IBAN(Identifier):
                 if len(bank_account_number) != account_number_length:
                     raise ValueError("Bank account number, if given as an "
                                      "int, must not have more than %i digits."
-                                     % bank_identifier_length)
+                                     % bban_split_pos)
             else:
                 raise TypeError("Bank account number must be instance of "
                                 "%s or %s." % (str, int))
             bban = bank_identifier + bank_account_number
             if bban_structure.match(bban):
-                check_digits = self.__class__.calc_check_digits(country_code,
-                                                                bban)
+                check_digits = calc_iban_check_digits(country_code, bban)
                 self._id = ''.join((country_code, check_digits,
                                     bank_identifier, bank_account_number))
             else:
