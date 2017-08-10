@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     license='BSD',
     keywords='identifier GS1 GLN GTIN SSCC GSIN ISBN ISMN ISSN BIC IBAN MIC '
-             'ISIN',
+             'ISIN VAT',
     platforms='all',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
