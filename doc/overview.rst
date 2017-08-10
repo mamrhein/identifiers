@@ -81,3 +81,13 @@ Identifiers for exchanges and exchange traded financial assets
   Uniquely identifies a tradable financial asset, a.k.a security.
 
   See http://www.anna-web.org/standards/isin-iso-6166/.
+
+Identifiers for Value Added Taxation
+------------------------------------
+
+* European Union VAT Registration Number
+
+  The VAT Registration Number is used to identify natural and legal persons
+  located in the European Union for purposes of VAT handling.
+
+  See http://ec.europa.eu/taxation_customs/business/vat

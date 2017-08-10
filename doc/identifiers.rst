@@ -70,3 +70,10 @@ Identifiers for exchanges and exchange traded financial assets
 
 .. autoclass:: ISIN
     :members: country_code, nsin, check_digit, elements
+
+European Union VAT Registration Number
+======================================
+
+.. autoclass:: EUVATId
+    :members: country_code, registration_code, elements
+

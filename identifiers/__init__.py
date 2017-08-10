@@ -34,12 +34,13 @@ from __future__ import absolute_import
 # local imports
 from .banking import BIC, IBAN
 from .bookland import ISBN, ISMN, ISSN
+from .euvatid import EUVATId
 from .finance import MIC, ISIN
 from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
 from .identifier import Identifier
 
 
-__version__ = 0, 2, 1
+__version__ = 0, 3, 0
 
 
 __all__ = [
@@ -56,5 +57,6 @@ __all__ = [
     'BIC',
     'IBAN',
     'MIC',
-    'ISIN'
+    'ISIN',
+    'EUVATId',
 ]

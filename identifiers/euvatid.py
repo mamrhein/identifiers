@@ -679,8 +679,8 @@ class EUVATId(Identifier):
 
     """European Union VAT Registration Number
 
-    The VAT Registration Number is used to identify companies located in the
-    European Union for purposes of VAT handling.
+    The VAT Registration Number is used to identify natural and legal persons
+    located in the European Union for purposes of VAT handling.
 
     Each VAT Id begins with the two-letter ISO 3166-1 code(*) for the country
     where it is registered, followed by a registration code. The structure of
