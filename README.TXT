@@ -15,6 +15,8 @@ word, number, letter, symbol, or any combination of those."
 Overview
 ========
 
+For more detailed documentation see http://identifiers.readthedocs.io.
+
 Identifiers standardized by GS1
 -------------------------------
 
