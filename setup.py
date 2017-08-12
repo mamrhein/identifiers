@@ -9,7 +9,7 @@ with open('CHANGES.TXT') as file:
 setup(
     name="identifiers",
     use_vcs_version=True,
-    setup_requires=["hgtools", "sphinx-py3doc-enhanced-theme"],
+    setup_requires=["hgtools"],
     install_requires=["iso3166"],
     packages=find_packages(),
     author="Michael Amrhein",
