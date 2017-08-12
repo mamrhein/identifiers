@@ -1,0 +1,2 @@
+# needed to build docs in virtual env:
+sphinxcontrib-napoleon
