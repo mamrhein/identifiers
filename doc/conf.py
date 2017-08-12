@@ -14,8 +14,6 @@
 
 import sys
 import os
-#import sphinxcontrib
-import sphinx_py3doc_enhanced_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -114,43 +112,13 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_py3doc_enhanced_theme'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-add_css = """
-/* light lilac background for class and function head-lines */
-dl.class > dt, dl.function > dt{
-    background: rgb(245,245,255) none repeat scroll 0% 0%;
-    border-radius: 4px;
-    padding-left: 10px;
-    margin-left: -10px;
-    line-height: 2em
-}
-/* overwrite enlarged font for toc */
-.toctree-l1 {
-    font-size: 100%;
-}
-/* show nav-links also on the top of the page */
-div.related:first-child li.right {
-    display: inherit;
-}"""
-
-html_theme_options = {
-    "bodyfont": "sans-serif",
-    "headfont": "sans-serif",
-    "codefont": "monospace",
-    #"externalrefs": True,
-    "sidebardepth": 3,
-    "codebgcolor": "rgb(255,255,245) !important",
-    "appendcss": add_css
-}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [
-    sphinx_py3doc_enhanced_theme.get_html_theme_path(),
-]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
