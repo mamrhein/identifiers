@@ -12,6 +12,7 @@ setup(
     setup_requires=["hgtools"],
     install_requires=["iso3166"],
     packages=find_packages(),
+    include_package_data=True,
     author="Michael Amrhein",
     author_email="michael@adrhinum.de",
     url="https://github.com/mamrhein/identifiers",
