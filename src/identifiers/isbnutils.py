@@ -46,7 +46,7 @@ def _iter_rules(root):
             yield (lower_prefix, upper_prefix, prefix_length, item_idx)
 
 
-file_name = os.path.join(os.path.dirname(__file__), "ISBN Ranges.xml")
+file_name = os.path.join(os.path.dirname(__file__), "ISBN_Ranges.xml")
 
 etree = ETree.parse(file_name)
 root = etree.getroot()

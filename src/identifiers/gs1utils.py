@@ -29,7 +29,7 @@ except ImportError:
 __metaclass__ = type
 
 
-file_name = os.path.join(os.path.dirname(__file__), "GS1 CP Ranges.xml")
+file_name = os.path.join(os.path.dirname(__file__), "GS1_CP_Ranges.xml")
 
 etree = ETree.parse(file_name)
 root = etree.getroot()
