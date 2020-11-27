@@ -1,20 +1,25 @@
+# coding=utf-8
+"""Setup package 'identifiers'."""
+
 from setuptools import setup, find_packages
 
 
-with open('README.TXT') as file:
+with open('README.txt') as file:
     long_description = file.read()
 
 setup(
     name="identifiers",
-    use_vcs_version=True,
-    install_requires=["iso3166"],
-    packages=find_packages(),
-    include_package_data=True,
+    # version="0.4.0a1",
     author="Michael Amrhein",
     author_email="michael@adrhinum.de",
     url="https://github.com/mamrhein/identifiers",
     description="International Standard Identifiers",
     long_description=long_description,
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
+    include_package_data=True,
+    python_requires=">=3.6",
+    install_requires=["iso3166"],
     license='BSD',
     keywords='identifier GS1 GLN GTIN SSCC GSIN ISBN ISMN ISSN BIC IBAN MIC '
              'ISIN VAT',
@@ -29,7 +34,6 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development",
