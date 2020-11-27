@@ -15,18 +15,20 @@
 # $Revision$
 
 
-"""International standard identifiers for books, book-like publications,
+r"""International standard identifiers for books, book-like publications,
 periodicals and notated music
 """
 
 import re
+
 from .identifier import Identifier
 from .gs1 import GTIN13
 from .isbnutils import lookup_isbn_prefix
 from .ismnutils import lookup_ismn_prefix
 
-_pattern_1 = re.compile('^(\d+)-(\d+)-(\d+)-(\d+)(?:-(\d))?$')
-_pattern_2 = re.compile('^(\d+) (\d+) (\d+) (\d+)(?: (\d))?$')
+
+_pattern_1 = re.compile(r'^(\d+)-(\d+)-(\d+)-(\d+)(?:-(\d))?$')
+_pattern_2 = re.compile(r'^(\d+) (\d+) (\d+) (\d+)(?: (\d))?$')
 
 
 class _BooklandGTIN(GTIN13):
