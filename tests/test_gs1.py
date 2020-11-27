@@ -17,12 +17,8 @@
 """Test driver for module gs1"""
 
 
-from __future__ import absolute_import, unicode_literals
 import unittest
 from identifiers.gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
-
-
-__metaclass__ = type
 
 
 class GS1NumericalIdentifierTest(unittest.TestCase):

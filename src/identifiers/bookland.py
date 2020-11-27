@@ -19,29 +19,20 @@
 periodicals and notated music
 """
 
-
-from __future__ import absolute_import
 import re
 from .identifier import Identifier
 from .gs1 import GTIN13
 from .isbnutils import lookup_isbn_prefix
 from .ismnutils import lookup_ismn_prefix
 
-str = type(u'')
-
-
-__metaclass__ = type
-
-
 _pattern_1 = re.compile('^(\d+)-(\d+)-(\d+)-(\d+)(?:-(\d))?$')
 _pattern_2 = re.compile('^(\d+) (\d+) (\d+) (\d+)(?: (\d))?$')
 
 
 class _BooklandGTIN(GTIN13):
-
     """Base class for the "bookland" GTINs."""
 
-    __slots__ = ('_registrant_idx')
+    __slots__ = '_registrant_idx'
 
     @property
     def registration_group(self):
@@ -111,10 +102,12 @@ class _BooklandGTIN(GTIN13):
                 match = _pattern_1.match(digits) or _pattern_2.match(digits)
                 if match:
                     parts = match.groups()
-                    if parts[4] is None:        # check digit omitted
-                        return self.__init__(*parts[:4])
+                    if parts[4] is None:  # check digit omitted
+                        self.__init__(*parts[:4])
+                        return
                     else:
-                        return self.__init__(*parts)
+                        self.__init__(*parts)
+                        return
                 else:
                     raise ValueError("Argument must only contain digits "
                                      "or be a string formatted as " +
@@ -177,7 +170,6 @@ class _BooklandGTIN(GTIN13):
 
 
 class ISBN(_BooklandGTIN):
-
     """International Standard Book Number
 
     The ISBN is a unique international identifier for monographic
@@ -202,7 +194,6 @@ class ISBN(_BooklandGTIN):
 
 
 class ISMN(_BooklandGTIN):
-
     """International Standard Music Number
 
     The ISMN is a unique international identifier of all notated music
@@ -228,7 +219,6 @@ class ISMN(_BooklandGTIN):
 
 
 class ISSN(Identifier):
-
     """International Standard Serial Number
 
     The ISSN is used to identify newspapers, journals, magazines and
@@ -295,11 +285,11 @@ class ISSN(Identifier):
                          "by an 'X', optionally separated by a blank "
                          "or a hyphen after the fourth digit.")
 
-    def as_gtin(self, addon=None):
+    def as_gtin(self, addon = None):
         """Return GTIN13 created from `self` + `addon`."""
         return ISSN13(self, addon)
 
-    def separated(self, separator='-'):
+    def separated(self, separator = '-'):
         return separator.join((self._id[:4], self._id[4:]))
 
     def __str__(self):
@@ -310,7 +300,6 @@ class ISSN(Identifier):
 
 
 class ISSN13(GTIN13):
-
     """International Standard Serial Number (as GTIN)
 
     The ISSN is used to identify newspapers, journals, magazines and
@@ -326,7 +315,7 @@ class ISSN13(GTIN13):
             return 3
         raise ValueError("ISSN prefix must be '977'.")
 
-    def __init__(self, serial_number, addon=None):
+    def __init__(self, serial_number, addon = None):
         if isinstance(serial_number, ISSN):
             if addon is None:
                 digits = '977' + serial_number.raw_number + '00'
@@ -337,21 +326,22 @@ class ISSN13(GTIN13):
                 digits = '977' + serial_number.raw_number + addon
             else:
                 raise TypeError("`addon` must be an instance of %s." % str)
-            return super(ISSN13, self).__init__(digits)
-        if isinstance(serial_number, str):
+            super(ISSN13, self).__init__(digits)
+        elif isinstance(serial_number, str):
             try:
                 issn = ISSN(serial_number)
             except ValueError:
-                pass
+                # given serial number is not an ISSN
+                if addon is not None:
+                    raise TypeError("`addon` must only be given together "
+                                    "with an ISSN.")
+                super(ISSN13, self).__init__(serial_number)
             else:
-                return self.__init__(issn, addon)
-            # given serial number is not an ISSN
-            if addon is not None:
-                raise TypeError("`addon` must only be given together "
-                                "with an ISSN.")
-            return super(ISSN13, self).__init__(serial_number)
-        raise TypeError("`serial_number` must be an ISSN or a string "
-                        "representing an ISSN or a GTIN with prefix '977'.")
+                self.__init__(issn, addon)
+        else:
+            raise TypeError("`serial_number` must be an ISSN or a string "
+                            "representing an ISSN or a GTIN with prefix "
+                            "'977'.")
 
     def extract_issn(self):
         """Return the ISSN encoded in `self`."""

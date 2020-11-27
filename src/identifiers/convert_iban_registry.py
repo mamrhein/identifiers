@@ -17,9 +17,7 @@
 
 """Utility to convert SWIFT iban registry file into a Python module"""
 
-
 # standard library imports
-from __future__ import absolute_import, unicode_literals
 from csv import reader as CSVReader
 from collections import namedtuple
 from itertools import groupby
@@ -29,11 +27,7 @@ import re
 import sys
 
 # local imports
-from ibanutils import calc_iban_check_digits, split_iban
-
-
-__metaclass__ = type
-
+from .ibanutils import calc_iban_check_digits, split_iban
 
 # Version 77 (May 2017),
 # downloaded from 'https://www.swift.com/file/32751/download?token=JVZ22AEg',
@@ -41,23 +35,16 @@ __metaclass__ = type
 file_name = os.path.join(os.path.dirname(__file__),
                          "swift_standards_ibanregistry.txt")
 
-if sys.version_info.major < 3:
 
-    def reader(file_name, encoding='cp1252'):
-        with open(file_name, mode='rb') as csv_file:
-            for row in CSVReader(csv_file, delimiter=b'\t', quotechar=b'"'):
-                yield row
-
-else:
-
-    def reader(file_name, encoding='cp1252'):
-        with open(file_name, mode='r', encoding=encoding) as csv_file:
-            for row in CSVReader(csv_file, delimiter='\t', quotechar='"'):
-                yield row
+def reader(file_name, encoding = 'cp1252'):
+    with open(file_name, mode='rb') as csv_file:
+        for row in CSVReader(csv_file, delimiter=b'\t', quotechar=b'"'):
+            yield row
 
 
-# data holder for IBAN registry records
+# noinspection PyPep8Naming
 class IBAN_Record:
+    """Data holder for IBAN registry records"""
     pass
 
 
@@ -70,7 +57,7 @@ def read_registry(file_name):
     for line in rdr:
         data_elem_name, values = line[0], line[1:]
         if data_elem_name not in ('BBAN', 'IBAN'):  # exclude lines used as
-                                                    # sub-section headers
+            # sub-section headers
             attr_name = data_elem_name \
                 .split('(')[0] \
                 .split('/')[0] \
@@ -83,7 +70,7 @@ def read_registry(file_name):
                     value = None
                 setattr(records[idx], attr_name, value)
         if data_elem_name == 'IBAN print format example':
-            break                                   # skip the rest
+            break  # skip the rest
     return records
 
 
@@ -111,8 +98,8 @@ CHAR_TYPE_MAP = dict(zip('nace', ('[0-9]', '[A-Z]', '[A-Za-z0-9]', '[ ]')))
 def format_spec_to_regexp(spec):
     expr = ''.join((CHAR_TYPE_MAP[_type] + '{' + str(min_length) +
                     '}' if min_length == max_length else ',%s}' % max_length
-                   for _type, min_length, max_length
-                   in group_format_spec(spec)))
+                    for _type, min_length, max_length
+                    in group_format_spec(spec)))
     return re.compile(expr)
 
 
@@ -223,7 +210,7 @@ def record_2_spec(record):
     # letter before the bank identifier. As simplification, we treat that
     # letter as part ofthe bank identifier:
     if country_code in ('IT', 'SM'):
-        shift = 1               # provide for extra char
+        shift = 1  # provide for extra char
         bban_split_pos += 1
     else:
         shift = 0
@@ -286,7 +273,6 @@ def write_module_header(py_file, file_name):
         "\n",
         "\"\"\"IBAN registry generated from file '%s'\"\"\"\n" % file_name,
         "\n",
-        "from __future__ import unicode_literals\n",
         "from collections import namedtuple\n",
         "import re\n",
         "\n",

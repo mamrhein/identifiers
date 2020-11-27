@@ -17,16 +17,12 @@
 """Utility functions for checking ISBNs"""
 
 
-from __future__ import absolute_import
 import os.path
 from bisect import bisect
 try:
     from xml.etree import cElementTree as ETree
 except ImportError:
     from xml.etree import ElementTree as ETree
-
-
-__metaclass__ = type
 
 
 def _iter_rules(root):

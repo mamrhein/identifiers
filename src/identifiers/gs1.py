@@ -17,15 +17,9 @@
 """Identifiers standardized by gs1.org"""
 
 
-from __future__ import absolute_import
-from abc import abstractproperty
+from abc import abstractmethod
 from .identifier import Identifier
 from .gs1utils import lookup_company_prefix
-
-str = type(u'')
-
-
-__metaclass__ = type
 
 
 class GS1NumericalIdentifier(Identifier):
@@ -37,7 +31,7 @@ class GS1NumericalIdentifier(Identifier):
           having a fixed length and a check digit at the end.
     """
 
-    __slots__ = ('_ref_idx')
+    __slots__ = '_ref_idx'
 
     @staticmethod
     def lookup_prefix(digits):
@@ -53,11 +47,15 @@ class GS1NumericalIdentifier(Identifier):
         checksum = 3 * sum(ints[odds]) + sum(ints[even])
         return str(-checksum % 10)
 
-    @abstractproperty
+    # noinspection PyPep8Naming
+    @property
+    @abstractmethod
     def LENGTH(self):
         pass
 
-    @abstractproperty
+    # noinspection PyPep8Naming
+    @property
+    @abstractmethod
     def EXTRA_DIGITS(self):
         pass
 

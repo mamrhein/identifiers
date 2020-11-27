@@ -29,7 +29,6 @@ word, number, letter, symbol, or any combination of those."
 
 
 # standard library imports
-from __future__ import absolute_import
 
 # local imports
 from .banking import BIC, IBAN

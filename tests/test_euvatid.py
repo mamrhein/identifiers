@@ -13,12 +13,8 @@
 # $Source$
 # $Revision$
 
-from __future__ import absolute_import, unicode_literals
 import unittest
 from identifiers.euvatid import EUVATId
-
-
-__metaclass__ = type
 
 
 _VALID_IDS = [

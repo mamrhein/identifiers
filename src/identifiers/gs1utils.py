@@ -17,7 +17,6 @@
 """Utility functions for GS1 identifiers"""
 
 
-from __future__ import absolute_import
 import os.path
 from bisect import bisect
 try:
@@ -26,15 +25,12 @@ except ImportError:
     from xml.etree import ElementTree as ETree
 
 
-__metaclass__ = type
-
-
 file_name = os.path.join(os.path.dirname(__file__), "GS1_CP_Ranges.xml")
 
 etree = ETree.parse(file_name)
 root = etree.getroot()
 prefix_list = [(elem.get('prefix'), int(elem.get('gcpLength')))
-               for elem in root.getchildren()]
+               for elem in root]
 
 
 def lookup_company_prefix(id):

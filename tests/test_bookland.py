@@ -17,12 +17,8 @@
 """Test driver for module bookland"""
 
 
-from __future__ import absolute_import, unicode_literals
 import unittest
 from identifiers.bookland import ISBN, ISMN, ISSN, ISSN13
-
-
-__metaclass__ = type
 
 
 class ISBNTest(unittest.TestCase):

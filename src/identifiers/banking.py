@@ -18,7 +18,6 @@
 
 
 # standard library imports
-from __future__ import absolute_import, unicode_literals
 from string import ascii_uppercase, digits
 
 # third party imports
@@ -28,11 +27,6 @@ from iso3166 import countries
 from .identifier import Identifier
 from .ibanregistry import get_iban_spec
 from .ibanutils import calc_iban_check_digits, split_iban
-
-str = type(u'')
-
-
-__metaclass__ = type
 
 
 _ALPHABET = digits + ascii_uppercase

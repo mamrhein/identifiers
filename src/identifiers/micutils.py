@@ -16,37 +16,21 @@
 
 """Utility functions for checking MICs"""
 
-
 # standard library imports
-from __future__ import absolute_import, unicode_literals
 from collections import namedtuple
 from csv import DictReader
 import os.path
-import sys
-
-
-__metaclass__ = type
-
 
 # downloaded file 'ISO10383_MIC.xls' from
 # 'https://www.iso20022.org/sites/default/files/ISO10383_MIC/'
 # and converted to csv
 file_name = os.path.join(os.path.dirname(__file__), "ISO10383_MIC.csv")
 
-if sys.version_info.major < 3:
 
-    def reader(file_name, encoding='utf-8'):
-        with open(file_name, mode='rb') as csv_file:
-            for row in DictReader(csv_file, delimiter=b'\t', quotechar=b'"'):
-                yield {unicode(key.strip(), encoding): unicode(val, encoding)
-                       for key, val in row.iteritems()}
-
-else:
-
-    def reader(file_name, encoding='utf-8'):
-        with open(file_name, mode='r', encoding=encoding) as csv_file:
-            for row in DictReader(csv_file, delimiter='\t', quotechar='"'):
-                yield {key.strip(): val.strip() for key, val in row.items()}
+def reader(file_name, encoding='utf-8'):
+    with open(file_name, mode='r', encoding=encoding) as csv_file:
+        for row in DictReader(csv_file, delimiter='\t', quotechar='"'):
+            yield {key.strip(): val for key, val in row.items()}
 
 
 _MIC_registry = {}

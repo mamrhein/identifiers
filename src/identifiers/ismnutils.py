@@ -17,11 +17,7 @@
 """Utility functions for checking ISMNs"""
 
 
-from __future__ import absolute_import
 from bisect import bisect
-
-
-__metaclass__ = type
 
 
 rule_list = [

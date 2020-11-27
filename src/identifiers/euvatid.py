@@ -18,7 +18,6 @@
 
 
 # standard library imports
-from __future__ import absolute_import, unicode_literals
 from datetime import date
 from itertools import chain
 import re
@@ -28,11 +27,6 @@ from string import ascii_uppercase
 
 # local imports
 from .identifier import Identifier
-
-str = type(u'')
-
-
-__metaclass__ = type
 
 
 _VAT_ID_RULES = {}

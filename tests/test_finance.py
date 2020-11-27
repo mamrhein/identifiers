@@ -17,12 +17,8 @@
 """Test driver for module finance"""
 
 
-from __future__ import absolute_import, unicode_literals
 import unittest
 from identifiers.finance import MIC, ISIN
-
-
-__metaclass__ = type
 
 
 class MICTest(unittest.TestCase):

@@ -17,13 +17,9 @@
 """Test driver for module banking"""
 
 
-from __future__ import absolute_import, unicode_literals
 import unittest
 from identifiers.banking import BIC, IBAN
 from identifiers.ibanregistry import IBAN_REGISTRY, get_iban_spec
-
-
-__metaclass__ = type
 
 
 class BICTest(unittest.TestCase):

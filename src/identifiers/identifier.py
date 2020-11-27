@@ -17,31 +17,10 @@
 """Abstract base class for identifiers"""
 
 
-from __future__ import absolute_import
 from abc import ABCMeta, abstractmethod
 
 
-__metaclass__ = type
-
-
-# decorator defining meta class, portable between Python 2 / Python 3
-def _withMetaCls(metaCls):
-    def _createCls(cls):
-        namespace = dict(cls.__dict__)
-        # remove descriptors for slots (will be recreated by metaclass)
-        try:
-            slots = namespace['__slots__']
-        except KeyError:
-            pass
-        else:
-            for name in slots:
-                del namespace[name]
-        return metaCls(cls.__name__, cls.__bases__, namespace)
-    return _createCls
-
-
-@_withMetaCls(ABCMeta)
-class Identifier():
+class Identifier(metaclass=ABCMeta):
 
     """Abstract base class for identifiers."""
 

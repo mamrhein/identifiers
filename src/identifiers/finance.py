@@ -18,7 +18,6 @@
 
 
 # standard library imports
-from __future__ import absolute_import, unicode_literals
 from string import ascii_uppercase, digits
 
 # third-party imports
@@ -28,11 +27,6 @@ from iso3166 import countries
 from .identifier import Identifier
 from .luhn import luhn
 from .micutils import get_mic_record
-
-str = type(u'')
-
-
-__metaclass__ = type
 
 
 _ALPHABET = digits + ascii_uppercase

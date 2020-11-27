@@ -18,11 +18,7 @@
 
 
 # standard library imports
-from __future__ import absolute_import, unicode_literals
 from string import ascii_uppercase, digits
-
-
-__metaclass__ = type
 
 
 _ALPHABET = digits + ascii_uppercase

@@ -17,15 +17,11 @@
 """Test driver for module identifier"""
 
 
-from __future__ import absolute_import, unicode_literals
 from abc import ABCMeta
 from copy import copy, deepcopy
 import unittest
 from uuid import uuid1
 from identifiers.identifier import Identifier
-
-
-__metaclass__ = type
 
 
 class Id(Identifier):
