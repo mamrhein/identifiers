@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-##----------------------------------------------------------------------------
-## Name:        test_finance
-## Purpose:     Test driver for module finance
-##
-## Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
-##
-## Copyright:   (c) 2017 Michael Amrhein
-## License:     This program is part of a larger application. For license
-##              details please read the file LICENSE.TXT provided together
-##              with the application.
-##----------------------------------------------------------------------------
-## $Source$
-## $Revision$
+# ---------------------------------------------------------------------------
+# Name:        test_finance
+# Purpose:     Test driver for module finance
+#
+# Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
+#
+# Copyright:   (c) 2017 Michael Amrhein
+# License:     This program is part of a larger application. For license
+#              details please read the file LICENSE.TXT provided together
+#              with the application.
+# ---------------------------------------------------------------------------
+# $Source$
+# $Revision$
 
 
 """Test driver for module finance"""

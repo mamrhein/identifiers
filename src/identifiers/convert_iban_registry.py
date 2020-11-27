@@ -1,18 +1,18 @@
 #!/usr/env python
 # -*- coding: utf-8 -*-
-##----------------------------------------------------------------------------
-## Name:        ibanutils
-## Purpose:     Convert SWIFT iban registry file into a Python module
-##
-## Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
-##
-## Copyright:   (c) 2017 Michael Amrhein
-## License:     This program is part of a larger application. For license
-##              details please read the file LICENSE.TXT provided together
-##              with the application.
-##----------------------------------------------------------------------------
-## $Source$
-## $Revision$
+# ---------------------------------------------------------------------------
+# Name:        ibanutils
+# Purpose:     Convert SWIFT iban registry file into a Python module
+#
+# Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
+#
+# Copyright:   (c) 2017 Michael Amrhein
+# License:     This program is part of a larger application. For license
+#              details please read the file LICENSE.TXT provided together
+#              with the application.
+# ---------------------------------------------------------------------------
+# $Source$
+# $Revision$
 
 
 """Utility to convert SWIFT iban registry file into a Python module"""

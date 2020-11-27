@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-##----------------------------------------------------------------------------
-## Name:        micutils
-## Purpose:     Utility functions for checking MICs
-##
-## Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
-##
-## Copyright:   (c) 2017 Michael Amrhein
-## License:     This program is part of a larger application. For license
-##              details please read the file LICENSE.TXT provided together
-##              with the application.
-##----------------------------------------------------------------------------
-## $Source$
-## $Revision$
+# ---------------------------------------------------------------------------
+# Name:        micutils
+# Purpose:     Utility functions for checking MICs
+#
+# Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
+#
+# Copyright:   (c) 2017 Michael Amrhein
+# License:     This program is part of a larger application. For license
+#              details please read the file LICENSE.TXT provided together
+#              with the application.
+# ---------------------------------------------------------------------------
+# $Source$
+# $Revision$
 
 
 """Utility functions for checking MICs"""
