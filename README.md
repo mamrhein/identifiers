@@ -1,8 +1,8 @@
-The package `identifiers` provides classes that can be used to create and
+The package _identifiers_ provides classes that can be used to create and
 check identifiers for unique objects or unique classes of objects
 according to international standards.
 
-*Definition from Wikipedia*:
+_Definition from Wikipedia_:
 
 "An identifier is a name that identifies (that is, labels the identity of)
 either a unique object or a unique class of objects, where the "object" or
@@ -12,13 +12,11 @@ often refers to identity, identification (the process of identifying), or an
 identifier (that is, an instance of identification). An identifier may be a
 word, number, letter, symbol, or any combination of those."
 
-Overview
-========
+## Overview
 
 For more detailed documentation see http://identifiers.readthedocs.io.
 
-Identifiers standardized by GS1
--------------------------------
+### Identifiers standardized by GS1
 
   See http://www.gs1.org/id-keys.
 
@@ -43,8 +41,7 @@ Identifiers standardized by GS1
   Used to identify logistics units, for example loads on pallets,
   roll cages or parcels.
 
-Identifiers for publications
-----------------------------
+### Identifiers for publications
 
 * International Standard Book Number (ISBN)
 
@@ -67,8 +64,7 @@ Identifiers for publications
 
   See http://www.issn.org.
 
-Identifiers for banks and bank accounts
----------------------------------------
+### Identifiers for banks and bank accounts
 
   See http://www.swift.com.
 
@@ -81,8 +77,7 @@ Identifiers for banks and bank accounts
   An internationally agreed system of identifying bank accounts across
   national borders.
 
-Identifiers for exchanges and exchange traded financial assets
---------------------------------------------------------------
+### Identifiers for exchanges and exchange traded financial assets
 
 * Market Identifier Code (MIC)
 
@@ -97,8 +92,7 @@ Identifiers for exchanges and exchange traded financial assets
 
   See http://www.anna-web.org/standards/isin-iso-6166/.
 
-Identifiers for Value Added Taxation
-------------------------------------
+### Identifiers for Value Added Taxation
 
 * European Union VAT Registration Number
 

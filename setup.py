@@ -4,17 +4,17 @@
 from setuptools import setup, find_packages
 
 
-with open('README.txt') as file:
+with open('README.md') as file:
     long_description = file.read()
 
 setup(
     name="identifiers",
-    # version="0.4.0a1",
     author="Michael Amrhein",
     author_email="michael@adrhinum.de",
     url="https://github.com/mamrhein/identifiers",
     description="International Standard Identifiers",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
     include_package_data=True,
