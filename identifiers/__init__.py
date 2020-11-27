@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-##----------------------------------------------------------------------------
-## Name:        identifiers (package)
-## Purpose:     Standardized identifiers for unique objects or unique classes
-##              of objects
-##
-## Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
-##
-## Copyright:   (c) 2016 Michael Amrhein
-## License:     This program is part of a larger application. For license
-##              details please read the file LICENSE.TXT provided together
-##              with the application.
-##----------------------------------------------------------------------------
-## $Source$
-## $Revision$
+# ----------------------------------------------------------------------------
+#  Name:        identifiers (package)
+#  Purpose:     Standardized identifiers for unique objects or unique classes
+#               of objects
+#
+#  Author:      Michael Amrhein (mamrhein@users.sourceforge.net)
+#
+#  Copyright:   (c) 2016 Michael Amrhein
+#  License:     This program is part of a larger application. For license
+#               details please read the file LICENSE.TXT provided together
+#               with the application.
+# ----------------------------------------------------------------------------
+#  $Source$
+#  $Revision$
 
 
 """Standardized identifiers for unique objects or unique classes of objects.
@@ -40,7 +40,7 @@ from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
 from .identifier import Identifier
 
 
-__version__ = 0, 3, 0
+__version__ = 0, 4, 0, 'a1'
 
 
 __all__ = [
