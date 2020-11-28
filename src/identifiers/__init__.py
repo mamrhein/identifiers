@@ -37,9 +37,7 @@ from .euvatid import EUVATId
 from .finance import MIC, ISIN
 from .gs1 import GLN, GSIN, GTIN12, GTIN13, GTIN14, SSCC
 from .identifier import Identifier
-
-
-__version__ = 0, 4, 0, 'a1'
+from .version import version as __version__
 
 
 __all__ = [
