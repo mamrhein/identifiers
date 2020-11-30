@@ -19,10 +19,7 @@
 
 import os.path
 from bisect import bisect
-try:
-    from xml.etree import cElementTree as ETree
-except ImportError:
-    from xml.etree import ElementTree as ETree
+from xml.etree import ElementTree as ETree
 
 
 file_name = os.path.join(os.path.dirname(__file__), "GS1_CP_Ranges.xml")
@@ -33,10 +30,11 @@ prefix_list = [(elem.get('prefix'), int(elem.get('gcpLength')))
                for elem in root]
 
 
-def lookup_company_prefix(id):
-    idx = bisect(prefix_list, (id,)) - 1
+def lookup_company_prefix(gs1_num_id: str) -> int:
+    """Validate company prefix of given `gs1_num_id`."""
+    idx = bisect(prefix_list, (gs1_num_id,)) - 1
     prefix, cp_length = prefix_list[idx]
-    if id.startswith(prefix):
+    if gs1_num_id.startswith(prefix):
         if cp_length > 0:
             return cp_length
         raise ValueError("Excluded prefix: '" + prefix + "'.")

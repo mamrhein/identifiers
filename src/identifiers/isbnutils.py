@@ -19,13 +19,11 @@
 
 import os.path
 from bisect import bisect
-try:
-    from xml.etree import cElementTree as ETree
-except ImportError:
-    from xml.etree import ElementTree as ETree
+from typing import Iterator, Tuple
+from xml.etree import ElementTree as ETree
 
 
-def _iter_rules(root):
+def _iter_rules(root: ETree.Element) -> Iterator:
     for elem in root.findall('RegistrationGroups/Group'):
         prefix = elem.findtext('Prefix').replace('-', '')
         prefix_length = len(prefix)
@@ -39,7 +37,7 @@ def _iter_rules(root):
                 item_idx = prefix_length + length
             else:
                 item_idx = 0
-            yield (lower_prefix, upper_prefix, prefix_length, item_idx)
+            yield lower_prefix, upper_prefix, prefix_length, item_idx
 
 
 file_name = os.path.join(os.path.dirname(__file__), "ISBN_Ranges.xml")
@@ -49,12 +47,13 @@ root = etree.getroot()
 rule_list = list(_iter_rules(root))
 
 
-def lookup_isbn_prefix(digits):
+def lookup_isbn_prefix(digits: str) -> Tuple[int, int]:
+    """Check ISBN prefix in `digits`."""
     idx = max(bisect(rule_list, (digits,)) - 1, 0)
     lower_prefix, upper_prefix, registrant_idx, item_idx = rule_list[idx]
     if lower_prefix <= digits <= upper_prefix:
         if item_idx > 0:
-            return (registrant_idx, item_idx)
+            return registrant_idx, item_idx
         raise ValueError("Excluded prefix range: '" + lower_prefix + "' - '" +
                          upper_prefix + "'.")
     if lower_prefix[:3] != digits[:3]:

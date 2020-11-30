@@ -19,6 +19,7 @@
 
 # standard library imports
 from string import ascii_uppercase, digits
+from typing import Tuple
 
 # third-party imports
 from iso3166 import countries
@@ -44,17 +45,18 @@ class MIC(Identifier):
 
     __slots__ = ()
 
-    def __init__(self, mic):
+    # noinspection PyMissingConstructor
+    def __init__(self, mic: str) -> None:
         """
         Args:
-            mic (`Unicode string`): string representation of the MIC
+            mic (str): string representation of the MIC
 
         Returns:
             :class:`MIC` instance
 
         Raises:
-            TypeError: given `mic` is not a `Unicode string`
-            ValueError: given `mic` is not registered
+            TypeError: given `mic` is not an instance of str
+            ValueError: given `mic` not found in the registry
         """
         if not isinstance(mic, str):
             raise TypeError("Argument must be instance of %s." % str)
@@ -65,7 +67,7 @@ class MIC(Identifier):
             raise ValueError("Unknown MIC: '%s'." % mic)
         self._id = mic
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         return self._id
 
@@ -86,31 +88,34 @@ class ISIN(Identifier):
 
     __slots__ = ()
 
+    # TODO: rename to calc_check_digit
     @staticmethod
-    def calc_check_digits(country_code, nsin):
+    def calc_check_digits(country_code: str, nsin: str) -> str:
+        """Calculate ISIN check digit."""
         return str(luhn(country_code + nsin))
 
     @property
-    def country_code(self):
+    def country_code(self) -> str:
         """Return the ISIN's Country Code."""
         return self._id[:2]
 
     @property
-    def check_digit(self):
+    def check_digit(self) -> str:
         """Return the ISIN's check digits."""
         return self._id[-1]
 
     @property
-    def nsin(self):
+    def nsin(self) -> str:
         """Return the ISIN's National Securities Identifying Number."""
         return self._id[2:-1]
 
-    def elements(self):
+    def elements(self) -> Tuple[str, str, str]:
         """Return the ISIN's Country Code, National Securities Identifying
         Number and check digit as tuple."""
-        return (self.country_code, self.nsin, self.check_digit)
+        return self.country_code, self.nsin, self.check_digit
 
-    def __init__(self, *args):
+    # noinspection PyMissingConstructor
+    def __init__(self, *args: str) -> None:
         """Instances of :class:`ISIN` can be created in two ways, by providing
         a Unicode string representation of an ISIN or by providing a country
         code and a national securities identifying number.
@@ -118,7 +123,7 @@ class ISIN(Identifier):
         **1. Form**
 
         Args:
-            isin (`Unicode string`): string representation of an ISIN
+            isin (str): string representation of an ISIN
 
         Returns:
             instance of :class:`ISIN`
@@ -133,9 +138,9 @@ class ISIN(Identifier):
         **2. Form**
 
         Args:
-            country_code (`Unicode string`): 2-character country code
+            country_code (str): 2-character country code
                 according to ISO 3166
-            nsin (`Unicode string`): national securities identifying
+            nsin (str): national securities identifying
                 number
 
         Returns:
@@ -198,6 +203,6 @@ class ISIN(Identifier):
         else:
             raise TypeError('Invalid number of arguments.')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         return self._id

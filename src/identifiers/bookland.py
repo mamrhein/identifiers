@@ -20,6 +20,7 @@ periodicals and notated music
 """
 
 import re
+from typing import Optional, Tuple, Union
 
 from .identifier import Identifier
 from .gs1 import GTIN13
@@ -37,18 +38,19 @@ class _BooklandGTIN(GTIN13):
     __slots__ = '_registrant_idx'
 
     @property
-    def registration_group(self):
+    def registration_group(self) -> str:
         """Return the Registration Group of the identifier."""
         return self._id[3:self._registrant_idx]
 
     @property
-    def registrant(self):
+    def registrant(self) -> str:
         """Return the Registrant of the identifier."""
         return self._id[self._registrant_idx:self._ref_idx]
 
     publication = GTIN13.item_reference
 
-    def __init__(self, *args):
+    # noinspection PyMissingConstructor
+    def __init__(self, *args) -> None:
         """An instance of {cls} can be created in two ways, by providing a
         Unicode string representation of an {cls} or by providing a GS1
         prefix, a registration group, a registrant, a publication number and,
@@ -158,13 +160,13 @@ class _BooklandGTIN(GTIN13):
         self._registrant_idx = reg_idx
         self._ref_idx = ref_idx
 
-    def elements(self):
+    def elements(self) -> Tuple[str, str, str, str, str]:
         """Return the identifier's elements (gs1_prefix, registration_group,
         registrant, publication, check_digit) as tuple."""
         return (self.gs1_prefix, self.registration_group, self.registrant,
                 self.publication, self.check_digit)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         # prefixing the number with the acronym of the identifier is
         # recommended by the standard
@@ -186,10 +188,11 @@ class ISBN(_BooklandGTIN):
     __slots__ = ()
 
     @staticmethod
-    def lookup_prefix(digits):
+    def lookup_prefix(digits: str) -> Tuple[int, int]:
+        """Check ISBN prefix in `digits`."""
         return lookup_isbn_prefix(digits)
 
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         super(ISBN, self).__init__(*args)
 
     __init__.__doc__ = _BooklandGTIN.__init__.__doc__.format(cls='ISBN')
@@ -211,10 +214,11 @@ class ISMN(_BooklandGTIN):
     __slots__ = ()
 
     @staticmethod
-    def lookup_prefix(digits):
+    def lookup_prefix(digits: str) -> Tuple[int, int]:
+        """Check ISMN prefix in `digits`."""
         return lookup_ismn_prefix(digits)
 
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         super(ISMN, self).__init__(*args)
 
     __init__.__doc__ = _BooklandGTIN.__init__.__doc__.format(cls='ISMN')
@@ -229,7 +233,8 @@ class ISSN(Identifier):
     __slots__ = ()
 
     @staticmethod
-    def calc_check_digit(digits):
+    def calc_check_digit(digits: str) -> str:
+        """Calculate ISSN check digit from `digits`."""
         checksum = sum((weight * int(digit)
                         for weight, digit
                         in zip(range(len(digits) + 1, 1, -1), digits)))
@@ -237,18 +242,19 @@ class ISSN(Identifier):
         return str(rem) if rem != 10 else 'X'
 
     @property
-    def raw_number(self):
+    def raw_number(self) -> str:
         """Return the ISSN without check digit."""
         return self._id[:-1]
 
     @property
-    def check_digit(self):
+    def check_digit(self) -> str:
         """Return the ISSN's check digit."""
         return self._id[-1]
 
-    def __init__(self, digits):
+    # noinspection PyMissingConstructor
+    def __init__(self, digits: str) -> None:
         """Args:
-            digits (`unicode string`): string representation of the ISSN
+            digits (str): string representation of the ISSN
 
         The argument must be a string with 8 digits, with 7 digits or with 7
         digits followed by an 'X', optionally separated by a blank or a hyphen
@@ -287,14 +293,15 @@ class ISSN(Identifier):
                          "by an 'X', optionally separated by a blank "
                          "or a hyphen after the fourth digit.")
 
-    def as_gtin(self, addon = None):
+    def as_gtin(self, addon = None) -> "ISSN13":
         """Return GTIN13 created from `self` + `addon`."""
         return ISSN13(self, addon)
 
-    def separated(self, separator = '-'):
+    def separated(self, separator: Optional[str] = '-') -> str:
+        """Return ISSN as string, optionally split by `separator`."""
         return separator.join((self._id[:4], self._id[4:]))
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         # prefixing the number with the acronym of the identifier is
         # recommended by the standard
@@ -312,12 +319,14 @@ class ISSN13(GTIN13):
     __slots__ = ()
 
     @staticmethod
-    def lookup_prefix(digits):
+    def lookup_prefix(digits: str) -> int:
+        """Check for ISSN prefix in `digits`."""
         if digits.startswith('977'):
             return 3
         raise ValueError("ISSN prefix must be '977'.")
 
-    def __init__(self, serial_number, addon = None):
+    def __init__(self, serial_number: Union[ISSN, str],
+                 addon: Optional[str] = None) -> None:
         if isinstance(serial_number, ISSN):
             if addon is None:
                 digits = '977' + serial_number.raw_number + '00'
@@ -345,6 +354,6 @@ class ISSN13(GTIN13):
                             "representing an ISSN or a GTIN with prefix "
                             "'977'.")
 
-    def extract_issn(self):
+    def extract_issn(self) -> ISSN:
         """Return the ISSN encoded in `self`."""
         return ISSN(self._id[3:10])

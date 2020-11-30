@@ -21,6 +21,7 @@ identification numbers"""
 
 # standard library imports
 from string import ascii_uppercase, digits
+from typing import Optional
 
 # third-party imports
 
@@ -47,6 +48,7 @@ from string import ascii_uppercase, digits
 # digits and ascii letters), the extended version provided here allows to
 # transform the input string into a sequence of digits by mapping the letters
 # A - Z into 10 - 35 using the following list.
+
 _ALPHABET = digits + ascii_uppercase
 
 # For enhanced performance, the implementation provided here uses an array of
@@ -123,7 +125,8 @@ _PRE_CALC = [
 ]
 
 
-def luhn(base, num_only=False, allow_lower_case=False):
+def luhn(base: str, num_only: Optional[bool] = False,
+         allow_lower_case: Optional[bool] = False) -> int:
     """Return the Luhn check digit for the given string.
 
     Args:

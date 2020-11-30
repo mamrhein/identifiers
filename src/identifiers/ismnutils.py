@@ -18,7 +18,7 @@
 
 
 from bisect import bisect
-
+from typing import Tuple
 
 rule_list = [
     ('979000000000', '979009999999', 4, 7),
@@ -29,9 +29,10 @@ rule_list = [
 ]
 
 
-def lookup_ismn_prefix(digits):
+def lookup_ismn_prefix(digits: str) -> Tuple[int, int]:
+    """Check ISMN prefix in `digits`."""
     idx = bisect(rule_list, (digits,)) - 1
     lower_prefix, upper_prefix, registrant_idx, item_idx = rule_list[idx]
     if lower_prefix <= digits <= upper_prefix:
-        return (registrant_idx, item_idx)
+        return registrant_idx, item_idx
     raise ValueError("ISMN prefix must be '9790'.")

@@ -19,8 +19,10 @@
 
 # standard library imports
 from string import ascii_uppercase, digits
+from typing import Tuple
 
 # third party imports
+
 from iso3166 import countries
 
 # local imports
@@ -46,35 +48,36 @@ class BIC(Identifier):
     __slots__ = ()
 
     @property
-    def party_prefix(self):
+    def party_prefix(self) -> str:
         """Return the BIC's Party Prefix."""
         return self._id[:4]
 
     @property
-    def country_code(self):
+    def country_code(self) -> str:
         """Return the BIC's Country Code."""
         return self._id[4:6]
 
     @property
-    def party_suffix(self):
+    def party_suffix(self) -> str:
         """Return the BIC's Party Suffix."""
         return self._id[6:8]
 
     @property
-    def branch_code(self):
+    def branch_code(self) -> str:
         """Return the BIC's Branch Code (maybe empty)."""
         return self._id[8:]
 
-    def elements(self):
+    def elements(self) -> Tuple[str, str, str, str]:
         """Return the BIC's Party Prefix, Country Code, Party Suffix and
         Branch Code as a tuple."""
         return (self.party_prefix, self.country_code, self.party_suffix,
                 self.branch_code)
 
-    def __init__(self, bic):
+    # noinspection PyMissingConstructor
+    def __init__(self, bic: str) -> None:
         """
         Args:
-            bic (`Unicode string`): string representation of the BIC
+            bic (str): string representation of the BIC
 
         Returns:
             :class:`BIC` instance
@@ -107,7 +110,7 @@ class BIC(Identifier):
             raise ValueError(msg)
         self._id = bic
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         return self._id
 
@@ -130,34 +133,35 @@ class IBAN(Identifier):
     __slots__ = ()
 
     @property
-    def country_code(self):
+    def country_code(self) -> str:
         """Return the IBAN's Country Code."""
         return self._id[:2]
 
     @property
-    def check_digits(self):
+    def check_digits(self) -> str:
         """Return the IBAN's check digits."""
         return self._id[2:4]
 
     @property
-    def bank_identifier(self):
+    def bank_identifier(self) -> str:
         """Return the IBAN's Bank Identifier."""
         end = get_iban_spec(self.country_code).bban_split_pos + 4
         return self._id[4:end]
 
     @property
-    def bank_account_number(self):
+    def bank_account_number(self) -> str:
         """Return the IBAN's Bank Account Number."""
         start = get_iban_spec(self.country_code).bban_split_pos + 4
         return self._id[start:]
 
-    def elements(self):
+    def elements(self) -> Tuple[str, str, str, str]:
         """Return the IBAN's Country Code, check digits, Bank Identifier and
         Bank Account Number as tuple."""
         return (self.country_code, self.check_digits, self.bank_identifier,
                 self.bank_account_number)
 
-    def __init__(self, *args):
+    # noinspection PyMissingConstructor
+    def __init__(self, *args) -> None:
         """Instances of :class:`IBAN` can be created in two ways, by providing
         a Unicode string representation of an IBAN or by providing a country
         code, a bank identifier and a bank account number.
@@ -286,7 +290,7 @@ class IBAN(Identifier):
         else:
             raise TypeError('Invalid number of arguments.')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         return ' '.join((self._id[i:i + 4]
                          for i in range(0, len(self._id), 4)))

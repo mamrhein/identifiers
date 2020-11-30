@@ -18,6 +18,7 @@
 
 
 from abc import ABCMeta, abstractmethod
+from typing import Mapping, Optional
 
 
 class Identifier(metaclass=ABCMeta):
@@ -27,33 +28,34 @@ class Identifier(metaclass=ABCMeta):
     __slots__ = ('_id',)
 
     @abstractmethod
-    def __init__(self, *args, **kwds):
+    def __init__(self, *args, **kwds) -> None:
         pass
 
-    def __copy__(self):
+    def __copy__(self) -> "Identifier":
         """copy(self)
 
         Returns self (identifiers are immutable)."""
         return self
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: Optional[Mapping]) -> "Identifier":
         """deepcopy(self)
 
         Returns self (identifiers are immutable)."""
         return self.__copy__()
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """hash(self)"""
         return hash(self.__class__.__name__ + str(self._id))
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """self == other"""
+        # noinspection PyProtectedMember
         return self.__class__ == other.__class__ and self._id == other._id
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """repr(self)"""
         return self.__class__.__name__ + "('" + str(self._id) + "')"

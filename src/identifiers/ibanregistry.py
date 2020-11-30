@@ -4,7 +4,6 @@
 
 """IBAN registry generated from file 'swift_standards_ibanregistry.txt'"""
 
-from __future__ import unicode_literals
 from collections import namedtuple
 import re
 
@@ -91,6 +90,6 @@ IBAN_REGISTRY = \
 
 
 # query function
-def get_iban_spec(country_code):
+def get_iban_spec(country_code: str) -> IBANSpec:
     """Retrieve IBAN structure spec from registry."""
     return IBAN_REGISTRY[country_code]

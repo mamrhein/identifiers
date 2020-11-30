@@ -18,6 +18,9 @@
 
 
 from abc import abstractmethod
+from typing import Callable, Optional, Tuple
+
+
 from .identifier import Identifier
 from .gs1utils import lookup_company_prefix
 
@@ -34,54 +37,58 @@ class GS1NumericalIdentifier(Identifier):
     __slots__ = '_ref_idx'
 
     @staticmethod
-    def lookup_prefix(digits):
+    def lookup_prefix(digits: str) -> int:
+        """Validate company prefix of a GS1NumericalIdentifier."""
         return lookup_company_prefix(digits)
 
     @staticmethod
-    def calc_check_digit(digits):
+    def calc_check_digit(digits: str) -> str:
         """Calculate and return the GS1 check digit."""
         ints = [int(d) for d in digits]
-        l = len(ints)
-        odds = slice((l - 1) % 2, l, 2)
-        even = slice(l % 2, l, 2)
+        n_digits = len(ints)
+        odds = slice((n_digits - 1) % 2, n_digits, 2)
+        even = slice(n_digits % 2, n_digits, 2)
         checksum = 3 * sum(ints[odds]) + sum(ints[even])
         return str(-checksum % 10)
 
     # noinspection PyPep8Naming
     @property
     @abstractmethod
-    def LENGTH(self):
+    def LENGTH(self) -> int:
+        """Length of GS1 identifier"""
         pass
 
     # noinspection PyPep8Naming
     @property
     @abstractmethod
-    def EXTRA_DIGITS(self):
+    def EXTRA_DIGITS(self) -> int:
+        """Number of extra digits in front of company prefix"""
         pass
 
     @property
-    def gs1_prefix(self):
+    def gs1_prefix(self) -> str:
         """Return the identifier's GS1 prefix part."""
         offset = self.EXTRA_DIGITS
         return self._id[offset:offset + 3]
 
     @property
-    def company_prefix(self):
+    def company_prefix(self) -> str:
         """Return the identifier's company prefix part."""
         offset = self.EXTRA_DIGITS
         return self._id[offset:self._ref_idx]
 
     @property
-    def _reference(self):
+    def _reference(self) -> str:
         """Return the identifier's reference part."""
         return self._id[self._ref_idx:-1]
 
     @property
-    def check_digit(self):
+    def check_digit(self) -> str:
         """Return the identifier's check digit."""
         return self._id[-1]
 
-    def __init__(self, *args):
+    # noinspection PyMissingConstructor
+    def __init__(self, *args: str) -> None:
         """An instance of {cls} can be created in two ways, by providing a
         Unicode string representation of a {cls} or by providing the {cls}'s
         elements as separate arguments.
@@ -89,7 +96,7 @@ class GS1NumericalIdentifier(Identifier):
         **1. Form**
 
         Args:
-            id (`Unicode string`): string representation of a {cls} (with or
+            id (str): string representation of a {cls} (with or
                 without a check digit)
 
         If `id` does not include a check digit, it is calculated and appended
@@ -99,7 +106,7 @@ class GS1NumericalIdentifier(Identifier):
             instance of :class:`{cls}`
 
         Raises:
-            TypeError: given `id` is not a `Unicode string`
+            TypeError: given `id` is not an instance of `str`
             ValueError: given `id` contains character(s) other than digits 0-9
             ValueError: given `id` contains wrong check digit
             ValueError: length of given `id` not valid
@@ -108,10 +115,10 @@ class GS1NumericalIdentifier(Identifier):
 
         Args:
             {extra_arg}
-            company_prefix (`Unicode string`): number identifying the company
+            company_prefix (str): number identifying the company
                 issuing the identifier, starting with a 3-digit GS1 prefix
-            {item_ref} (`Unicode string`): number identifying the {item}
-            check_digit (`Unicode string`): 1-digit number (optional)
+            {item_ref} (str): number identifying the {item}
+            check_digit (str): 1-digit number (optional)
 
         If `check_digit` is omitted, it is calculated and appended
         automatically.
@@ -121,7 +128,7 @@ class GS1NumericalIdentifier(Identifier):
 
         Raises:
             TypeError: invalid number of arguments
-            TypeError: a given argument is not a Unicode string
+            TypeError: a given argument is not an instance of `str`
             ValueError: a given argument contains character(s) other than
                 digits 0-9
             ValueError: length of given `company_prefix` not valid
@@ -162,6 +169,8 @@ class GS1NumericalIdentifier(Identifier):
                     try:
                         extra_digits, company_prefix, ref_elem = args
                     except ValueError:  # wrong number of arguments
+                        extra_digits = company_prefix = ref_elem = \
+                            check_digit = ''
                         error_msg = \
                             "One, three or four arguments required, {} given."
                     else:
@@ -174,6 +183,7 @@ class GS1NumericalIdentifier(Identifier):
                     try:
                         company_prefix, ref_elem = args
                     except ValueError:  # wrong number of arguments
+                        company_prefix = ref_elem = check_digit = ''
                         error_msg = \
                             "One, two or three arguments required, {} given."
                     else:
@@ -211,29 +221,31 @@ class GS1NumericalIdentifier(Identifier):
         self._id = digits
         self._ref_idx = ref_idx
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(self)"""
         return str(self._id)
 
-    def elements(self):
+    def elements(self) -> Tuple[str]:
         """Return the identifier's elements as tuple."""
         offset = self.EXTRA_DIGITS
         if offset:
             return (self._id[:offset], self.company_prefix, self._reference,
                     self.check_digit)
         else:
-            return (self.company_prefix, self._reference, self.check_digit)
+            return self.company_prefix, self._reference, self.check_digit
 
-    def separated(self, separator='-'):
+    def separated(self, separator: Optional[str] = '-') -> str:
         """Return a string representation of the identifier with its elements
         separated by the given separator."""
         return separator.join((part for part in self.elements() if part))
 
 
-def _make_init_doc(cls, extra_arg='', item_ref='', item=''):
+def _make_init_doc(cls, extra_arg: Optional[str] = '',
+                   item_ref: Optional[str] = '', item: Optional[str] = ''):
     doc = GS1NumericalIdentifier.__init__.__doc__
 
-    def deco(meth):
+    def deco(meth: Callable[..., None]) -> Callable[..., None]:
+        """Generate doc string for __init__ method `meth`."""
         meth.__doc__ = doc.format(cls=cls, extra_arg=extra_arg,
                                   item_ref=item_ref, item=item)
         return meth
@@ -241,6 +253,7 @@ def _make_init_doc(cls, extra_arg='', item_ref='', item=''):
     return deco
 
 
+# noinspection PyAbstractClass
 class GTIN(GS1NumericalIdentifier):
 
     """Global Trade Item Number
@@ -266,7 +279,7 @@ class GTIN12(GTIN):
     EXTRA_DIGITS = 0
 
     @_make_init_doc('GTIN12', item_ref='item_reference', item='trade item')
-    def __init__(self, *args):
+    def __init__(self, *args: str) -> None:
         super(GTIN12, self).__init__(*args)
 
 
@@ -283,7 +296,7 @@ class GTIN13(GTIN):
     EXTRA_DIGITS = 0
 
     @_make_init_doc('GTIN13', item_ref='item_reference', item='trade item')
-    def __init__(self, *args):
+    def __init__(self, *args: str) -> None:
         super(GTIN13, self).__init__(*args)
 
 
@@ -300,14 +313,14 @@ class GTIN14(GTIN):
     EXTRA_DIGITS = 1
 
     @property
-    def level_indicator(self):
+    def level_indicator(self) -> str:
         """Return the identifier's level indicator (i.e. the first digit)."""
         return self._id[0]
 
-    def __init__(self, *args):
+    def __init__(self, *args: str) -> None:
         """An instance of GTIN14 can be created in three ways, by providing a
-        GTIN12 or GTIN13, by providing a Unicode string representation of a
-        GTIN14 or by providing the GTIN14's elements as separate arguments.
+        GTIN12 or GTIN13, by providing a string representation of a GTIN14 or
+        by providing the GTIN14's elements as separate arguments.
 
         **1. Form**
 
@@ -320,7 +333,7 @@ class GTIN14(GTIN):
         **2. Form**
 
         Args:
-            id (`Unicode string`): string representation of a GTIN14 (with or
+            id (str): string representation of a GTIN14 (with or
                 without a check digit)
 
         If `id` does not include a check digit, it is calculated and appended
@@ -330,7 +343,7 @@ class GTIN14(GTIN):
             instance of :class:`GTIN14`
 
         Raises:
-            TypeError: given `id` is not a `Unicode string`
+            TypeError: given `id` is not an instance of `str`
             ValueError: given `id` contains character(s) other than digits 0-9
             ValueError: given `id` contains wrong check digit
             ValueError: length of given `id` not valid
@@ -338,13 +351,13 @@ class GTIN14(GTIN):
         **3. Form**
 
         Args:
-            level_indicator (`Unicode string`): 1-digit number providing
+            level_indicator (str): 1-digit number providing
                 additional name space
-            company_prefix (`Unicode string`): number identifying the company
+            company_prefix (str): number identifying the company
                 issuing the identifier, starting with a 3-digit GS1 prefix
-            item_reference (`Unicode string`): number identifying the trade
+            item_reference (str): number identifying the trade
                 item
-            check_digit (`Unicode string`): 1-digit number (optional)
+            check_digit (str): 1-digit number (optional)
 
         If `check_digit` is omitted, it is calculated and appended
         automatically.
@@ -388,7 +401,7 @@ class GLN(GS1NumericalIdentifier):
     location_reference = GS1NumericalIdentifier._reference
 
     @_make_init_doc('GLN', item_ref='location_reference', item='location')
-    def __init__(self, *args):
+    def __init__(self, *args: str) -> None:
         super(GLN, self).__init__(*args)
 
 
@@ -408,15 +421,15 @@ class SSCC(GS1NumericalIdentifier):
     serial_reference = GS1NumericalIdentifier._reference
 
     @property
-    def extension_digit(self):
+    def extension_digit(self) -> str:
         """Return the identifier's extension digit (i.e. the first digit)."""
         return self._id[0]
 
-    @_make_init_doc('SSCC', extra_arg='extension_digit (`Unicode string`) '
+    @_make_init_doc('SSCC', extra_arg='extension_digit (str) '
                     '1-digit number providing additional name space',
                     item_ref='serial_reference',
                     item='shipping container')
-    def __init__(self, *args):
+    def __init__(self, *args: str) -> None:
         super(SSCC, self).__init__(*args)
 
 
@@ -436,5 +449,5 @@ class GSIN(GS1NumericalIdentifier):
     shipper_reference = GS1NumericalIdentifier._reference
 
     @_make_init_doc('GSIN', item_ref='shipper_reference', item='shipment')
-    def __init__(self, *args):
+    def __init__(self, *args: str) -> None:
         super(GSIN, self).__init__(*args)

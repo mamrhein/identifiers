@@ -20,14 +20,19 @@
 from collections import namedtuple
 from csv import DictReader
 import os.path
+from typing import Generator, List
 
+
+# TODO: renew MIC registry
 # downloaded file 'ISO10383_MIC.xls' from
 # 'https://www.iso20022.org/sites/default/files/ISO10383_MIC/'
 # and converted to csv
+
 file_name = os.path.join(os.path.dirname(__file__), "ISO10383_MIC.csv")
 
 
-def reader(file_name, encoding='utf-8'):
+def _reader(file_name: str, encoding= 'utf-8') \
+        -> Generator[List[str], None, None]:
     with open(file_name, mode='r', encoding=encoding) as csv_file:
         for row in DictReader(csv_file, delimiter='\t', quotechar='"'):
             yield {key.strip(): val for key, val in row.items()}
@@ -37,7 +42,7 @@ _MIC_registry = {}
 MICRecord = namedtuple('MICRecord', ('mic', 'country_code',
                                      'operating_mic', 'name', 'city'))
 
-for record in reader(file_name):
+for record in _reader(file_name):
     mic = record['MIC']
     country_code = record['ISO COUNTRY CODE (ISO 3166)']
     operating_mic = record['OPERATING MIC']
@@ -49,14 +54,13 @@ for record in reader(file_name):
 
 
 # for testing purposes
-def _dump_registry():
+def _dump_registry() -> None:
     for key, val in sorted(_MIC_registry.items()):
         print(key, val)
     print(20 * '-')
     print("%i records" % len(_MIC_registry))
 
 
-# query function
-def get_mic_record(mic):
+def get_mic_record(mic: str) -> MICRecord:
     """Retrieve MIC record from registry."""
     return _MIC_registry[mic]
