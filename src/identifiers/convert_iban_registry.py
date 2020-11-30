@@ -17,6 +17,7 @@
 
 """Utility to convert SWIFT iban registry file into a Python module"""
 
+
 # standard library imports
 from csv import reader as CSVReader
 from collections import namedtuple
@@ -25,39 +26,47 @@ import os.path
 from pprint import pprint
 import re
 import sys
+from typing import Generator, IO, List, Optional, Pattern, Tuple
 
 # local imports
-from .ibanutils import calc_iban_check_digits, split_iban
+pkg_dir = os.path.dirname(__file__)
+sys.path = [os.path.dirname(pkg_dir)] + sys.path
+# noinspection PyUnresolvedReferences,PyPackageRequirements
+from identifiers.ibanutils import calc_iban_check_digits, split_iban
 
+
+# TODO: renew IBAN registry
 # Version 77 (May 2017),
 # downloaded from 'https://www.swift.com/file/32751/download?token=JVZ22AEg',
 # transposed and converted to csv
-file_name = os.path.join(os.path.dirname(__file__),
-                         "swift_standards_ibanregistry.txt")
+file_name: str = os.path.join(os.path.dirname(__file__),
+                              "swift_standards_ibanregistry.txt")
 
 
-def reader(file_name, encoding = 'cp1252'):
-    with open(file_name, mode='rb') as csv_file:
-        for row in CSVReader(csv_file, delimiter=b'\t', quotechar=b'"'):
+def reader(file_name: str, encoding: Optional[str] = 'cp1252') \
+        -> Generator[List[str], None, None]:
+    """Return iterator over rows in file `path_to_input_file` in CSV format."""
+    with open(file_name, mode='r', encoding=encoding) as csv_file:
+        for row in CSVReader(csv_file, delimiter='\t', quotechar='"'):
             yield row
 
 
-# noinspection PyPep8Naming
-class IBAN_Record:
+class IBANRecord:
     """Data holder for IBAN registry records"""
     pass
 
 
-def read_registry(file_name):
+def read_registry(file_name: str) -> List[IBANRecord]:
+    """Extract IBAN rules from file `path_to_input_file`."""
     rdr = reader(file_name)
     head_line = next(rdr)
     n_specs = len(head_line) - 1
     print("%i IBAN specs found." % n_specs)
-    records = [IBAN_Record() for i in range(n_specs)]
+    records = [IBANRecord() for _ in range(n_specs)]
     for line in rdr:
         data_elem_name, values = line[0], line[1:]
-        if data_elem_name not in ('BBAN', 'IBAN'):  # exclude lines used as
-            # sub-section headers
+        # exclude lines used as sub-section headers
+        if data_elem_name not in ('BBAN', 'IBAN'):
             attr_name = data_elem_name \
                 .split('(')[0] \
                 .split('/')[0] \
@@ -75,11 +84,13 @@ def read_registry(file_name):
 
 
 # regexp to find format specs
-FORMAT_REGEXP = '(\d+)([!]*)([nace])'
+FORMAT_REGEXP = r'(\d+)([!]*)([nace])'
 _format = re.compile(FORMAT_REGEXP)
 
 
-def group_format_spec(spec):
+def group_format_spec(spec: str) -> Generator[Tuple[str, int, int],
+                                              None, None]:
+    """Group elements from format spec."""
     for _type, elems in groupby(_format.findall(spec),
                                 key=lambda expr: expr[2]):
         min_length = max_length = 0
@@ -95,7 +106,8 @@ def group_format_spec(spec):
 CHAR_TYPE_MAP = dict(zip('nace', ('[0-9]', '[A-Z]', '[A-Za-z0-9]', '[ ]')))
 
 
-def format_spec_to_regexp(spec):
+def format_spec_to_regexp(spec: str) -> Pattern:
+    """Build regexp from format spec"""
     expr = ''.join((CHAR_TYPE_MAP[_type] + '{' + str(min_length) +
                     '}' if min_length == max_length else ',%s}' % max_length
                     for _type, min_length, max_length
@@ -103,7 +115,8 @@ def format_spec_to_regexp(spec):
     return re.compile(expr)
 
 
-def extract_length(spec):
+def extract_length(spec: str) -> int:
+    """Get length value form format spec"""
     # spec = spec.split(';')[0]
     # try:
     #     return int(spec)
@@ -116,11 +129,12 @@ def extract_length(spec):
 
 
 # regexp to find position specs
-POS_REGEXP = '(\d{1,2})([-]*)(\d{0,2})'
+POS_REGEXP = r'(\d{1,2})([-]*)(\d{0,2})'
 _pos = re.compile(POS_REGEXP)
 
 
-def extract_pos(spec):
+def extract_pos(spec: str) -> Tuple[int, int]:
+    """Get start and end pos values from format spec"""
     pos_specs = _pos.findall(spec)
     if pos_specs:
         start, _, end = pos_specs[0]
@@ -131,7 +145,8 @@ def extract_pos(spec):
     raise ValueError
 
 
-def guess_pattern(example):
+def guess_pattern(example: str) -> Tuple[int, str]:
+    """Guess pattern from example."""
     try:
         length = len(example)
     except TypeError:
@@ -149,7 +164,9 @@ IBANSpec = namedtuple('IBANSpec', ('bban_length', 'bban_structure',
                                    'bban_split_pos', 'examples'))
 
 
-def record_2_spec(record):
+# noinspection PyUnresolvedReferences
+def record_2_spec(record: IBANRecord) -> Tuple[str, IBANSpec]:
+    """Convert IBANRecord `record` to country code and IBANSpec."""
     errors = []
     # extract relevant attrs from record
     country_code = record.iban_prefix_country_code
@@ -208,7 +225,7 @@ def record_2_spec(record):
     bban_split_pos = bank_id_length_from_pos + branch_id_length_from_pos
     # Differently from all others, Italian and San Marinos BBANs start with a
     # letter before the bank identifier. As simplification, we treat that
-    # letter as part ofthe bank identifier:
+    # letter as part of the bank identifier:
     if country_code in ('IT', 'SM'):
         shift = 1  # provide for extra char
         bban_split_pos += 1
@@ -265,7 +282,8 @@ def record_2_spec(record):
     return country_code, iban_spec
 
 
-def write_module_header(py_file, file_name):
+def write_module_header(py_file: IO, file_name: str) -> None:
+    """Write header to Python module."""
     py_file.writelines((
         "# -*- coding: utf-8 -*-\n",
         "# $Source$\n",
@@ -281,33 +299,37 @@ def write_module_header(py_file, file_name):
         "\n"))
 
 
-def write_code(py_file, IBAN_registry):
+def write_code(py_file: IO, iban_registry: dict) -> None:
+    """Write IBAN registry and retrieval code to Python module."""
     py_file.write("IBAN_REGISTRY = \\\n")
-    pprint(IBAN_registry, stream=py_file)
+    pprint(iban_registry, stream=py_file)
     py_file.writelines((
         "\n\n",
         "# query function\n",
-        "def get_iban_spec(country_code):\n",
+        "def get_iban_spec(country_code: str) -> IBANSpec:\n",
         '    """Retrieve IBAN structure spec from registry."""\n',
         "    return IBAN_REGISTRY[country_code]\n"))
 
 
-def main(file_name, module_name):
-    records = read_registry(file_name)
-    IBAN_registry = {}
+def main(path_to_input_file: str, module_name: str) -> None:
+    """Convert IBAN registry to Python module."""
+    records = read_registry(path_to_input_file)
+    iban_registry = {}
     for record in records:
         country_code, spec = record_2_spec(record)
-        IBAN_registry[country_code] = spec
+        iban_registry[country_code] = spec
     if module_name:
-        with open(os.path.extsep.join((module_name, 'py')),
-                  mode='w') as py_file:
-            write_module_header(py_file, file_name)
-            write_code(py_file, IBAN_registry)
+        py_file_name = os.path.join(pkg_dir,
+                                    os.path.extsep.join((module_name, 'py')))
+        with open(py_file_name, mode='w', encoding="utf-8") as py_file:
+            write_module_header(py_file, os.path.basename(path_to_input_file))
+            write_code(py_file, iban_registry)
     else:
-        pprint(IBAN_registry)
+        pprint(iban_registry)
 
 
-def print_usage():
+def print_usage() -> None:
+    """Print usage hint."""
     print("Usage: %s <input file> [<module name>]" % __file__)
 
 
