@@ -199,11 +199,11 @@ def check_cz_8d(base: str, add: Optional[str] = None) -> str:
 _VAT_ID_RULES['CZ'] = (
     # 10-digit individuals (born 1.1.1954 or later)
     (re.compile(r'^(?P<base>\d{2}([05]\d|[16][0-2])(0[1-9]|[12]\d|3[01])\d{4})'
-                r'(?P<check>)$'), check_cz_10d),
+                r'$'), check_cz_10d),
     # 9-digit individuals (born before 1.1.1954)
     (re.compile(r'^(?P<base>([0-4]\d|5[0-3])'
                 r'([05]\d|[16][0-2])(0[1-9]|[12]\d|3[01])\d{3})'
-                r'(?P<check>)$'), check_cz_9d),
+                r'$'), check_cz_9d),
     # special cases
     (re.compile(r'^(?P<base>6\d{7})(?P<check>\d)$'), check_cz_sp),
     # legal entities
@@ -246,7 +246,7 @@ def check_dk(base: str, add: Optional[str] = None) -> str:
 
 
 _VAT_ID_RULES['DK'] = (
-    (re.compile(r'^(?P<base>[1-9]\d{7})(?P<check>)$'), check_dk),
+    (re.compile(r'^(?P<base>[1-9]\d{7})$'), check_dk),
 )
 
 
@@ -375,7 +375,7 @@ _VAT_ID_RULES['FR'] = (
     # old system
     (re.compile(r'^(?P<check>\d{2})(?P<base>[1-9]{9})$'), check_fr_old),
     # new system
-    (re.compile(r'^(?P<check>)(?P<base>([A-HJ-NP-Z]\d|\d[A-HJ-NP-Z])[1-9]{9})'),
+    (re.compile(r'^(?P<base>([A-HJ-NP-Z]\d|\d[A-HJ-NP-Z])[1-9]{9})'),
      check_fr_new),
 )
 
@@ -399,7 +399,7 @@ def check_gb(base: str, add: Optional[str] = None) -> str:
 
 _VAT_ID_RULES['GB'] = (
     # branch traders (12 digits) and standard (9 digits)
-    (re.compile(r'^(?P<base>((00|[1-9]\d)\d{7}))(?P<check>)'
+    (re.compile(r'^(?P<base>((00|[1-9]\d)\d{7}))'
                 r'(\d\d[1-9]|\d[1-9]\d|[1-9]\d\d|$)$'), check_gb),
     # government departments
     (re.compile(r'^GD[0-4]\d{2}'), None),
@@ -593,7 +593,7 @@ _VAT_ID_RULES['LV'] = (
     (re.compile(r'^(?P<base>[4-9]\d{9})(?P<check>\d)$'), check_lv_legal),
     # natural persons
     (re.compile(r'^(?P<base>(0[1-9]|[12]\d|3[01])(0[1-9]|1[0-2])\d{2}[012]'
-                r'\d{4})(?P<check>)$'), check_lv_natural),
+                r'\d{4})$'), check_lv_natural),
 )
 
 
@@ -765,7 +765,7 @@ def check_sk(base: str, add: Optional[str] = None) -> str:
 
 
 _VAT_ID_RULES['SK'] = (
-    (re.compile(r'^(?P<base>[1-9]\d[2-47-9]\d{7})(?P<check>)$'), check_sk),
+    (re.compile(r'^(?P<base>[1-9]\d[2-47-9]\d{7})$'), check_sk),
 )
 
 
@@ -847,7 +847,7 @@ class EUVATId(Identifier):
                 if (check is None or
                         check(match.group('base'),
                               match.groupdict().get('add')) ==
-                        match.group('check')):
+                        match.groupdict().get('check', '')):
                     self._id = vat_id
                     return
                 else:
