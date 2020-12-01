@@ -195,7 +195,6 @@ def check_cz_8d(base: str, add: Optional[str] = None) -> str:
     return str((11 - s % 11) % 10)
 
 
-# TODO: remove empty groups
 _VAT_ID_RULES['CZ'] = (
     # 10-digit individuals (born 1.1.1954 or later)
     (re.compile(r'^(?P<base>\d{2}([05]\d|[16][0-2])(0[1-9]|[12]\d|3[01])\d{4})'
