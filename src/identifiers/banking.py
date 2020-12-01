@@ -27,7 +27,7 @@ from iso3166 import countries
 
 # local imports
 from .identifier import Identifier
-from .ibanregistry import get_iban_spec
+from .ibanregistry import get_iban_spec, IBANSpec
 from .ibanutils import calc_iban_check_digits, split_iban
 
 
@@ -218,11 +218,11 @@ class IBAN(Identifier):
             arg0 = arg0.strip()
             country_code, check_digits, bban = split_iban(arg0)
             try:
-                bban_length, bban_structure, bban_split_pos, _ = \
-                    get_iban_spec(country_code)
+                spec = get_iban_spec(country_code)
             except KeyError:
                 raise ValueError("Unknown country code: '%s'." % country_code)
-            if len(bban) == bban_length and bban_structure.match(bban):
+            if (len(bban) == spec.bban_length and
+                    spec.bban_structure.match(bban)):
                 corr_check_digits = calc_iban_check_digits(country_code, bban)
                 if check_digits != corr_check_digits:
                     raise ValueError(
@@ -239,10 +239,11 @@ class IBAN(Identifier):
                 raise ValueError("Country code must be a 2-character string.")
             country_code = arg0
             try:
-                bban_length, bban_structure, bban_split_pos, _ = \
-                    get_iban_spec(country_code)
+                spec = get_iban_spec(country_code)
             except KeyError:
                 raise ValueError("Unknown country code: '%s'." % country_code)
+            bban_length, bban_structure, bban_split_pos = \
+                spec.bban_length, spec.bban_structure, spec.bban_split_pos
             arg1 = args[1]
             if isinstance(arg1, str):
                 if len(arg1) == bban_split_pos:
