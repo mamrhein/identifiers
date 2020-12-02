@@ -54,8 +54,8 @@ def lookup_isbn_prefix(digits: str) -> Tuple[int, int]:
     if lower_prefix <= digits <= upper_prefix:
         if item_idx > 0:
             return registrant_idx, item_idx
-        raise ValueError("Excluded prefix range: '" + lower_prefix + "' - '" +
-                         upper_prefix + "'.")
+        raise ValueError(f"Excluded prefix range: '{lower_prefix}' - "
+                         f"'{upper_prefix}'.")
     if lower_prefix[:3] != digits[:3]:
         raise ValueError("Undefined prefix.")
     raise ValueError("Undefined registration group or registrant.")
