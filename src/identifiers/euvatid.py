@@ -58,7 +58,7 @@ def check_be(base: str, add: Optional[str] = None) -> str:
 
 
 _VAT_ID_RULES['BE'] = (
-    (re.compile(r'^(?P<base>0[1-9]\d{6})(?P<check>\d{2})$'), check_be),
+    (re.compile(r'^(?P<base>0[1-9]\d{6}|1\d{7})(?P<check>\d{2})$'), check_be),
 )
 
 
