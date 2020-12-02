@@ -832,13 +832,13 @@ class EUVATId(Identifier):
                 country code
         """
         if not isinstance(vat_id, str):
-            raise TypeError("Argument must be instance of %s." % str)
+            raise TypeError("Argument must be an instance of 'str'.")
         vat_id = vat_id.strip().upper()
         country_code = vat_id[:2]
         try:
             rules = _VAT_ID_RULES[country_code]
         except KeyError:
-            msg = "Unknown country code: '%s'" % country_code
+            msg = f"Unknown country code: '{country_code}'"
         else:
             reg_code = vat_id[2:]
             match, check = get_first_match(rules, reg_code)
@@ -850,13 +850,13 @@ class EUVATId(Identifier):
                     self._id = vat_id
                     return
                 else:
-                    msg = "'%s' does not pass the checks for '%s'." \
-                          % (reg_code, country_code)
+                    msg = f"'{reg_code}' does not pass the checks for " \
+                          f"'{country_code}'."
             else:
-                msg = "'%s' does not match the pattern%s for '%s': '%s'." \
-                      % (reg_code, '' if len(rules) == 1 else 's',
-                         country_code, ' | '.join((p.pattern
-                                                   for p, _ in rules)))
+                msg = f"'{reg_code}' does not match the " \
+                      f"pattern{'' if len(rules) == 1 else 's'} " \
+                      f"for '{country_code}': " \
+                      f"'{' | '.join((p.pattern for p, _ in rules))}'."
         raise ValueError(msg)
 
     def __str__(self) -> str:
