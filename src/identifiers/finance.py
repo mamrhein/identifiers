@@ -88,9 +88,8 @@ class ISIN(Identifier):
 
     __slots__ = ()
 
-    # TODO: rename to calc_check_digit
     @staticmethod
-    def calc_check_digits(country_code: str, nsin: str) -> str:
+    def calc_check_digit(country_code: str, nsin: str) -> str:
         """Calculate ISIN check digit."""
         return str(luhn(country_code + nsin))
 
@@ -170,7 +169,7 @@ class ISIN(Identifier):
             except KeyError:
                 raise ValueError(f"Unknown country code: '{country_code}'.")
             nsin = arg0[2:-1]
-            check_digit = self.__class__.calc_check_digits(country_code, nsin)
+            check_digit = self.__class__.calc_check_digit(country_code, nsin)
             if check_digit != arg0[-1]:
                 raise ValueError("Wrong check digit; should be "
                                  f"'{check_digit}'.")
@@ -198,7 +197,7 @@ class ISIN(Identifier):
                                      " characters.")
             else:
                 raise TypeError("Given nsin must be instance of 'str'.")
-            check_digit = self.__class__.calc_check_digits(country_code, nsin)
+            check_digit = self.__class__.calc_check_digit(country_code, nsin)
             self._id = ''.join((country_code, nsin, check_digit))
         else:
             raise TypeError('Invalid number of arguments.')
