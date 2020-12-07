@@ -57,7 +57,7 @@ def _dump_registry() -> None:
     for key, val in sorted(_MIC_registry.items()):
         print(key, val)
     print(20 * '-')
-    print("%i records" % len(_MIC_registry))
+    print(f"{len(_MIC_registry)} records")
 
 
 def get_mic_record(mic: str) -> MICRecord:

@@ -59,12 +59,12 @@ class MIC(Identifier):
             ValueError: given `mic` not found in the registry
         """
         if not isinstance(mic, str):
-            raise TypeError("Argument must be instance of %s." % str)
+            raise TypeError("Argument must be instance of 'str'.")
         mic = mic.strip()
         try:
             get_mic_record(mic)
         except KeyError:
-            raise ValueError("Unknown MIC: '%s'." % mic)
+            raise ValueError(f"Unknown MIC: '{mic}'.")
         self._id = mic
 
     def __str__(self) -> str:
@@ -159,7 +159,7 @@ class ISIN(Identifier):
         if n_args == 1:
             arg0 = args[0]
             if not isinstance(arg0, str):
-                raise TypeError("Argument must be instance of %s." % str)
+                raise TypeError("Argument must be instance of 'str'.")
             arg0 = arg0.strip()
             if len(arg0) != 12:
                 raise ValueError('Invalid ISIN format: '
@@ -168,24 +168,24 @@ class ISIN(Identifier):
             try:
                 countries.get(country_code)
             except KeyError:
-                raise ValueError("Unknown country code: '%s'." % country_code)
+                raise ValueError(f"Unknown country code: '{country_code}'.")
             nsin = arg0[2:-1]
             check_digit = self.__class__.calc_check_digits(country_code, nsin)
             if check_digit != arg0[-1]:
-                raise ValueError("Wrong check digit; should be '" +
-                                 check_digit + "'.")
+                raise ValueError("Wrong check digit; should be "
+                                 f"'{check_digit}'.")
             self._id = arg0
         elif n_args == 2:
             arg0 = args[0]
             if not isinstance(arg0, str):
-                raise TypeError("Country code must be instance of %s." % str)
+                raise TypeError("Country code must be instance of 'str'.")
             if len(arg0) != 2:
                 raise ValueError("Country code must be a 2-character string.")
             country_code = arg0
             try:
                 countries.get(country_code)
             except KeyError:
-                raise ValueError("Unknown country code: '%s'." % country_code)
+                raise ValueError(f"Unknown country code: '{country_code}'.")
             arg1 = args[1]
             if isinstance(arg1, str):
                 len_nsin = len(arg1)
@@ -194,10 +194,10 @@ class ISIN(Identifier):
                 elif 6 <= len_nsin < 9:
                     nsin = arg1.rjust(9, '0')
                 else:
-                    raise ValueError("Given nsin must contain between 6 and 9"
+                    raise ValueError("Given NSIN must contain between 6 and 9"
                                      " characters.")
             else:
-                raise TypeError("Given nsin must be instance of %s." % str)
+                raise TypeError("Given nsin must be instance of 'str'.")
             check_digit = self.__class__.calc_check_digits(country_code, nsin)
             self._id = ''.join((country_code, nsin, check_digit))
         else:

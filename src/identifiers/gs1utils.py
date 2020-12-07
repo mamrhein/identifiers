@@ -37,5 +37,5 @@ def lookup_company_prefix(gs1_num_id: str) -> int:
     if gs1_num_id.startswith(prefix):
         if cp_length > 0:
             return cp_length
-        raise ValueError("Excluded prefix: '" + prefix + "'.")
+        raise ValueError(f"Excluded prefix: '{prefix}'.")
     raise ValueError("Undefined prefix.")

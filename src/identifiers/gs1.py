@@ -137,7 +137,7 @@ class GS1NumericalIdentifier(Identifier):
             ValueError: invalid check digit
         """
         if not all(isinstance(arg, str) for arg in args):
-            raise TypeError("All arguments must be instances of %s." % str)
+            raise TypeError("All arguments must be instances of 'str'.")
         n_args = len(args)
         # 1. form: one argument given
         if n_args == 1:
@@ -150,14 +150,14 @@ class GS1NumericalIdentifier(Identifier):
             if n_digits == self.LENGTH:
                 check_digit = self.__class__.calc_check_digit(digits[:-1])
                 if check_digit != digits[-1]:
-                    raise ValueError("Wrong check digit; should be '" +
-                                     check_digit + "'.")
+                    raise ValueError("Wrong check digit; should be "
+                                     f"'{check_digit}'.")
             elif n_digits == self.LENGTH - 1:
                 check_digit = self.__class__.calc_check_digit(digits)
                 digits += check_digit
             else:
-                raise ValueError("Argument must have " + str(self.LENGTH) +
-                                 " or " + str(self.LENGTH - 1) + " digits.")
+                raise ValueError(f"Argument must have {self.LENGTH} or "
+                                 f"{self.LENGTH - 1} digits.")
         # 2. form: single elements given
         else:
             error_msg = None
@@ -195,26 +195,26 @@ class GS1NumericalIdentifier(Identifier):
                 raise ValueError("Arguments must only contain digits.")
             offset = self.EXTRA_DIGITS
             if offset and len(extra_digits) != offset:
-                raise ValueError("First element must contain " + str(offset) +
-                                 " digit" + "s" * min(offset - 1, 1) +
-                                 ", " + str(len(extra_digits)) + " given.")
+                raise ValueError(f"First element must contain {offset}"
+                                 f" digit{'s' * min(offset - 1, 1)}, "
+                                 f"{len(extra_digits)} given.")
             ref_idx = self.__class__.lookup_prefix(digits[offset:]) + offset
             if len(company_prefix) + offset != ref_idx:
-                raise ValueError("Undefined company prefix: '" +
-                                 company_prefix + "'.")
+                raise ValueError("Undefined company prefix: "
+                                 f"'{company_prefix}'.")
             len_ref_elem = self.LENGTH - ref_idx - 1
             if len(ref_elem) != len_ref_elem:
-                raise ValueError(("Second", "Third")[extra_arg] +
-                                 " argument must contain " +
-                                 str(len_ref_elem) + " digits.")
+                raise ValueError(f"{('Second', 'Third')[extra_arg]}"
+                                 " argument must contain "
+                                 f"{len_ref_elem} digits.")
             if check_digit:
                 if len(check_digit) != 1:
                     raise ValueError("Check digit must only be one digit.")
                 valid_check_digit = \
                     self.__class__.calc_check_digit(digits[:-1])
                 if check_digit != valid_check_digit:
-                    raise ValueError("Wrong check digit; should be '" +
-                                     valid_check_digit + "'.")
+                    raise ValueError("Wrong check digit; should be " 
+                                     f"'{valid_check_digit}'.")
             else:
                 check_digit = self.__class__.calc_check_digit(digits)
                 digits += check_digit
