@@ -68,9 +68,9 @@ class GS1NumericalIdentifierTest(unittest.TestCase):
         # wrong check digit
         self.assertRaises(ValueError, GLN, '570019', '123456', '9')
         # correct GLN
-        gln = GLN('570019', '123456', '1')
+        gln = GLN('5700191', '23456', '1')
         self.assertEqual(gln._id, '5700191234561')
-        gln = GLN('570019', '123456')
+        gln = GLN('5700191', '23456')
         self.assertEqual(gln._id, '5700191234561')
 
     def test_str(self):
@@ -82,10 +82,10 @@ class GLN_Test(unittest.TestCase):
     def test_elements(self):
         gln = GLN('5700271234566')
         self.assertEqual(gln.gs1_prefix, '570')
-        self.assertEqual(gln.company_prefix, '570027')
-        self.assertEqual(gln.location_reference, '123456')
+        self.assertEqual(gln.company_prefix, '5700271')
+        self.assertEqual(gln.location_reference, '23456')
         self.assertEqual(gln.check_digit, '6')
-        self.assertEqual(gln.elements(), ('570027', '123456', '6'))
+        self.assertEqual(gln.elements(), ('5700271', '23456', '6'))
         gln = GLN('377912345678')
         self.assertEqual(gln.gs1_prefix, '377')
         self.assertEqual(gln.company_prefix, '377912345678')
@@ -95,8 +95,8 @@ class GLN_Test(unittest.TestCase):
 
     def test_separated(self):
         gln = GLN('5700271234566')
-        self.assertEqual(gln.separated(), '570027-123456-6')
-        self.assertEqual(gln.separated('•'), '570027•123456•6')
+        self.assertEqual(gln.separated(), '5700271-23456-6')
+        self.assertEqual(gln.separated('•'), '5700271•23456•6')
 
 
 class GTIN12_Test(unittest.TestCase):
@@ -130,10 +130,10 @@ class GTIN13_Test(unittest.TestCase):
     def test_elements(self):
         gtin = GTIN13('5700271234566')
         self.assertEqual(gtin.gs1_prefix, '570')
-        self.assertEqual(gtin.company_prefix, '570027')
-        self.assertEqual(gtin.item_reference, '123456')
+        self.assertEqual(gtin.company_prefix, '5700271')
+        self.assertEqual(gtin.item_reference, '23456')
         self.assertEqual(gtin.check_digit, '6')
-        self.assertEqual(gtin.elements(), ('570027', '123456', '6'))
+        self.assertEqual(gtin.elements(), ('5700271', '23456', '6'))
         gtin = GTIN13('377912345678')
         self.assertEqual(gtin.gs1_prefix, '377')
         self.assertEqual(gtin.company_prefix, '377912345678')
@@ -143,8 +143,8 @@ class GTIN13_Test(unittest.TestCase):
 
     def test_separated(self):
         gtin = GTIN13('5700271234566')
-        self.assertEqual(gtin.separated(), '570027-123456-6')
-        self.assertEqual(gtin.separated('•'), '570027•123456•6')
+        self.assertEqual(gtin.separated(), '5700271-23456-6')
+        self.assertEqual(gtin.separated('•'), '5700271•23456•6')
 
 
 class GTIN14_Test(unittest.TestCase):
