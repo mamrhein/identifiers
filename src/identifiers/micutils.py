@@ -23,10 +23,9 @@ import os.path
 from typing import Generator, List
 
 
-# TODO: renew MIC registry
-# downloaded file 'ISO10383_MIC.xls' from
+# Downloaded file 'ISO10383_MIC.csv' from
 # 'https://www.iso20022.org/sites/default/files/ISO10383_MIC/'
-# and converted to csv
+# and converted to utf-8 encoding and tab-separated.
 
 file_name = os.path.join(os.path.dirname(__file__), "ISO10383_MIC.csv")
 
