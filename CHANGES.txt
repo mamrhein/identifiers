@@ -5,8 +5,22 @@ History
 =========== ==================================================================
 Version     Changes
 =========== ==================================================================
+0.4.0       Updated IBAN registry file to release 88 (Sept. 2020).
+            Updated ISBN ranges file.
+            Updated GS1 company prefix ranges.
+            Updated MIC registry to version NOV2020.
+            Revised checks for Belgian VAT ids.
+            Renamed 'ISIN.calc_check_digits' to 'ISIN.calc_check_digit'.
+            Removed Python 2.x compatibility.
+            Added Python 3.9 support.
+            Added type hints.
+            Revised project directory layout.
+
 0.3.0       Added identifier EUVATId
+
 0.2.1       Restructured and renewed IBAN registry
+
 0.2.0       Added identifiers MIC and ISIN
+
 0.1.0       First public release.
 =========== ==================================================================
