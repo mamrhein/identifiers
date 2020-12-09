@@ -1,3 +1,4 @@
 # needed to build docs in virtual env:
 sphinxcontrib-napoleon
 sphinx_py3doc_enhanced_theme
+setuptools_scm[toml]>=3.4
