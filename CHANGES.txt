@@ -5,6 +5,8 @@ History
 =========== ==================================================================
 Version     Changes
 =========== ==================================================================
+0.4.1       Fixed broken doc at ReadTheDocs.
+
 0.4.0       Updated IBAN registry file to release 88 (Sept. 2020).
             Updated ISBN ranges file.
             Updated GS1 company prefix ranges.
